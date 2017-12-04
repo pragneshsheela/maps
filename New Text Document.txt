@@ -1,0 +1,37 @@
+// having waypoints
+
+
+        // here wps is: set of waypoints a route contains( {source [lat,long] , waypoint1[lat1,long1], waypoint2[lat2,long2]....., 
+		destination[lat_dest, long_dest]} )
+
+
+
+
+	function setroute(wps,rendererOptions)
+	{
+		var wp = [];
+		var os = $.parseJSON(wps);
+		var obj = new google.maps.(rendererOptions);
+		for(var i=0;i<os.waypoints.length;i++)
+			wp[i] = {'location': new google.maps.LatLng(os.waypoints[i][0], os.waypoints[i][1]),'stopover':false }
+ 
+		var request = {
+			origin: new google.maps.LatLng(os.start.lat,os.start.lng),
+			destination: new google.maps.LatLng(os.end.lat,os.end.lng),
+			waypoints: wp,
+			travelMode: google.maps.TravelMode.DRIVING
+		};
+
+		directionsService.route(request, function(response, status) {
+			if (status == google.maps.DirectionsStatus.OK) {
+				obj.setDirections(response);
+				obj.setMap(map);
+			}
+		});
+
+		return obj;
+	}
+    function removeRoute(obj)
+    {
+        obj.setMap(null);
+    }
