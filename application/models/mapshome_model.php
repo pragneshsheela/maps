@@ -107,6 +107,7 @@ class Mapshome_model extends CI_Model {
         return $query->result_array();
     }
     function get_routes($city){
+
         // $this->db->select('routes.route_id,routes.route_name');                     
         // $this->db->from('cities');
         // $this->db->join('routes', 'routes.city_id = cities.city_id');
@@ -123,6 +124,5 @@ class Mapshome_model extends CI_Model {
         $query = $this->db->get();
         return $query->result_array();
     }
- 
 }
 ?>	
