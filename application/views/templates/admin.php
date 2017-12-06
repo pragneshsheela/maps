@@ -324,8 +324,7 @@
     }
 
     // having waypoints
-    function setroute(wps,rendererOptions)
-    {
+    function setroute(wps,rendererOptions) {
         var wp = [];
         var os = $.parseJSON(wps);
         var obj = new google.maps.DirectionsRenderer(rendererOptions);
@@ -379,49 +378,64 @@
     } 
 
 
-    function loadwaypointmap(){
+    function loadwaypointmap(id){
+
+        // console.log(id);
+        // var chkPassport = document.getElementById("way_"+id);
+        // if (chkPassport.checked) {
+        //     console.log("CheckBox checked.");
+        //     let wp = $("#rtWp_"+id).val();
+        //     //console.log(wp);
+        //     let color = getRandomColor();
+        //     existPath[pathsCnt]  = new Array();
+        //     let rander = {
+        //         draggable :false,
+        //         polylineOptions:{strokeColor:color}
+        //     };
+        //     existPath[pathsCnt][0] = setroute(wp,rander);
+        // } else {
+        //     console.log("CheckBox not checked.");
+        // }
 
             var $this = $(this);
-
             if ($(this).is(':checked')) {
-            
-                 $this.css('background-position','0px 0px');
+                console.log('if');
+                $this.css('background-position','0px 0px');
                 $this.find(':checkbox').prop('checked',false);
                 $(existPath).each(function(i,obj){
-                    if (obj[1] == $this.siblings('.rtId').val())
-                    {
+                    if (obj[1] == $this.siblings('.rtId').val()) {
                         obj[0].setMap(null);
                         $(obj).splice(i , 1);
                         pathsCnt--;
                     }
                 });
-            }else{
 
+            } else {
+                console.log('else');
                 $this.css('background-position','0px -16px');
                 $this.find(':checkbox').prop('checked',true);
                 existPath[pathsCnt]  = new Array();
                 var origin = $this.siblings('.rtOrig').val();
                 var des   = $this.siblings('.rtDest').val();                
-                var wp   = $('#rtWp').val();
+                //let wp   = $('#rtWp').val();
+                let wp = $("#rtWp_"+id).val();
+                console.log(wp);
+                
                 var color = getRandomColor();
-                alert(color);
-                alert(wp);
+                // alert(color);
+                // alert(wp);
                 var rander = {
                     draggable :false,
                     polylineOptions:{strokeColor:color}
                 };
-                if( wp == "" )
-                {
+                if( wp == "" ) {
                     existPath[pathsCnt][0] = showRoute(origin,des,rander);
-                }
-                else
-                {
+                } else {
                     existPath[pathsCnt][0] = setroute(wp,rander);
                 }
                 existPath[pathsCnt][1] = $this.siblings('.rtId').val();
+                console.log(existPath);
                 pathsCnt++;
-
-
             }
 
            
