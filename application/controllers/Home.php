@@ -48,6 +48,7 @@ class Home extends CI_Controller {
 				$route[$route_id] = [];
 				$route[$route_id]['latitude'] = $row['route_latitude'];
 				$route[$route_id]['longitude'] = $row['route_longitude'];
+				$route[$route_id]['image'] = $row['poi_image'];
 				$route[$route_id]['waypoints_latitude_longitude'] = [];
 			};
 
@@ -83,6 +84,7 @@ class Home extends CI_Controller {
 		                <input type='hidden' class='rtOlng' value='".$value['longitude']."'>
 		                <input type='hidden' class='rtDlat' value='".$value['latitude']."'>
 		                <input type='hidden' class='rtDlng' value='".$value['longitude']."'>
+		                <input type='hidden' id="."image_".$key." value='".$value['image']."'>
 						<input type='hidden' id='rtWp_".$key."' value='{&quot;start&quot;:{&quot;lat&quot;:".$value['latitude'].",&quot;lng&quot;:".$value['longitude']."},&quot;end&quot;:{&quot;lat&quot;:".$value['latitude'].",&quot;lng&quot;:".$value['longitude']."},&quot;waypoints&quot;:[".$waypoints_latitude_longitude."]}'></div></li>";
 					$cnt_new++;
 					}

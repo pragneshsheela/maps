@@ -25,6 +25,9 @@
     <!--     Fonts and icons     -->
     <link href="assets/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons" />
+
+    <link rel="stylesheet" href="assets/featurecarousel/css/feature-carousel.css" charset="utf-8" />
+
     <script type="text/javascript">
 
     // Initialise some variables
@@ -253,6 +256,34 @@
 <script src="assets/js/material-dashboard.js"></script>
 <!-- Material Dashboard DEMO methods, don't include it in your project! -->
 <script src="assets/js/demo.js"></script>
+
+<script src="assets/featurecarousel/js/jquery.featureCarousel.js" type="text/javascript" charset="utf-8"></script>
+
+<script type="text/javascript">
+
+  var imageArray = new Array();
+  $(".carousel-container").hide();
+  $(document).ready(function() {
+
+    // var carousel = $("#carousel").featureCarousel({
+    // });
+
+    // $("#but_prev").click(function () {
+    //   carousel.prev();
+    // });
+    // $("#but_pause").click(function () {
+    //   carousel.pause();
+    // });
+    // $("#but_start").click(function () {
+    //   carousel.start();
+    // });
+    // $("#but_next").click(function () {
+    //   carousel.next();
+    // });
+  });
+</script>
+
+
 <script type="text/javascript">
  $(".city").on("change keyup", function() {
 
@@ -329,7 +360,7 @@
         var os = $.parseJSON(wps);
         var obj = new google.maps.DirectionsRenderer(rendererOptions);
         for(var i=0;i<os.waypoints.length;i++)
-            wp[i] = {'location': new google.maps.LatLng(os.waypoints[i][0], os.waypoints[i][1]),'stopover':false }
+            wp[i] = {'location': new google.maps.LatLng(os.waypoints[i][0], os.waypoints[i][1]),'stopover':true }
 
         var request = {
             origin: new google.maps.LatLng(os.start.lat,os.start.lng),
@@ -347,10 +378,6 @@
 
         return obj;
     }
-
-    
-
-    
 
     var existPath = new Array();    
     var directionsService = new google.maps.DirectionsService();
@@ -378,26 +405,41 @@
     } 
 
 
+    function remove(array, element) {
+        const index = array.indexOf(element);
+        array.splice(index, 1);
+    }
+
+
     function loadwaypointmap(id){
+        $('#carousel').html('');
+        $(".carousel-container").hide();
 
-        // console.log(id);
-        // var chkPassport = document.getElementById("way_"+id);
-        // if (chkPassport.checked) {
-        //     console.log("CheckBox checked.");
-        //     let wp = $("#rtWp_"+id).val();
-        //     //console.log(wp);
-        //     let color = getRandomColor();
-        //     existPath[pathsCnt]  = new Array();
-        //     let rander = {
-        //         draggable :false,
-        //         polylineOptions:{strokeColor:color}
-        //     };
-        //     existPath[pathsCnt][0] = setroute(wp,rander);
-        // } else {
-        //     console.log("CheckBox not checked.");
-        // }
+        var chkPassport = document.getElementById("way_"+id);
+        let imagePath = $("#image_" + id).val();
+        if (chkPassport.checked) {
+            imageArray.push(imagePath);
+        } else {
+            remove(imageArray, imagePath);
+        }
+        if(imageArray.length !== 0) {
+            let content  = '';
+            $.each( imageArray, function( key, value ) {
+                $('<div class="carousel-feature"><a><img class="carousel-image" alt="Image Caption" src="'+value+'"></a></div>').appendTo('#carousel');
+                // content += '<div class="carousel-feature"><a><img class="carousel-image" alt="Image Caption" src="'+value+'"></a></div>';
+            });
+            // console.log(content);
+            // $('#carousel').html(content);
+            $("#carousel").featureCarousel();
+            $(".carousel-container").show();
+            
+        } else {
+            $(".carousel-container").hide();
+        }
 
-            var $this = $(this);
+            
+
+            var $this = $(this);1
             if ($(this).is(':checked')) {
                 console.log('if');
                 $this.css('background-position','0px 0px');
@@ -411,7 +453,7 @@
                 });
 
             } else {
-                console.log('else');
+                // console.log('else');
                 $this.css('background-position','0px -16px');
                 $this.find(':checkbox').prop('checked',true);
                 existPath[pathsCnt]  = new Array();
@@ -419,7 +461,7 @@
                 var des   = $this.siblings('.rtDest').val();                
                 //let wp   = $('#rtWp').val();
                 let wp = $("#rtWp_"+id).val();
-                console.log(wp);
+                // console.log(wp);
                 
                 var color = getRandomColor();
                 // alert(color);
@@ -434,7 +476,7 @@
                     existPath[pathsCnt][0] = setroute(wp,rander);
                 }
                 existPath[pathsCnt][1] = $this.siblings('.rtId').val();
-                console.log(existPath);
+                // console.log(existPath);
                 pathsCnt++;
             }
 
@@ -687,4 +729,6 @@
         //$('.card .material-datatables label').addClass('form-group');
     });
 </script>
+
+
 </html>
