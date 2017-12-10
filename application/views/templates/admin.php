@@ -160,6 +160,8 @@
                                 
                             </ul>
                         </div>
+
+                        
                 </li>   
 
                   
@@ -211,7 +213,7 @@
                     </div>
                 </div>
             </nav>
-
+            
             <?php echo $body; ?>
         +/div>
     </div>
@@ -263,28 +265,11 @@
 
   var imageArray = new Array();
   $(".carousel-container").hide();
-  $(document).ready(function() {
-
-    // var carousel = $("#carousel").featureCarousel({
-    // });
-
-    // $("#but_prev").click(function () {
-    //   carousel.prev();
-    // });
-    // $("#but_pause").click(function () {
-    //   carousel.pause();
-    // });
-    // $("#but_start").click(function () {
-    //   carousel.start();
-    // });
-    // $("#but_next").click(function () {
-    //   carousel.next();
-    // });
-  });
 </script>
 
 
 <script type="text/javascript">
+
  $(".city").on("change keyup", function() {
 
           var city = $(this).val()
@@ -312,6 +297,7 @@
                             //alert("here");
                            // alert(data);
                         //console.log(data);
+                        $("#route").html('');  
                         $("#route").append(data);  
                      }  
                   }); 
@@ -359,6 +345,7 @@
         var wp = [];
         var os = $.parseJSON(wps);
         var obj = new google.maps.DirectionsRenderer(rendererOptions);
+
         for(var i=0;i<os.waypoints.length;i++)
             wp[i] = {'location': new google.maps.LatLng(os.waypoints[i][0], os.waypoints[i][1]),'stopover':true }
 
@@ -396,12 +383,12 @@
     
 
     function getRandomColor() {
-    var letters = '0123456789ABCDEF'.split('');
-    var color = '#';
-    for (var i = 0; i < 6; i++ ) {
-        color += letters[Math.round(Math.random() * 15)];
-    }
-    return color;
+        var letters = '0123456789ABCDEF'.split('');
+        var color = '#';
+        for (var i = 0; i < 6; i++ ) {
+            color += letters[Math.round(Math.random() * 15)];
+        }
+        return color;
     } 
 
 
@@ -412,82 +399,65 @@
 
 
     function loadwaypointmap(id){
-        $('#carousel').html('');
-        $(".carousel-container").hide();
 
-        var chkPassport = document.getElementById("way_"+id);
-        let imagePath = $("#image_" + id).val();
-        if (chkPassport.checked) {
-            imageArray.push(imagePath);
-        } else {
-            remove(imageArray, imagePath);
-        }
-        if(imageArray.length !== 0) {
-            let content  = '';
-            $.each( imageArray, function( key, value ) {
-                $('<div class="carousel-feature"><a><img class="carousel-image" alt="Image Caption" src="'+value+'"></a></div>').appendTo('#carousel');
-                // content += '<div class="carousel-feature"><a><img class="carousel-image" alt="Image Caption" src="'+value+'"></a></div>';
-            });
-            // console.log(content);
-            // $('#carousel').html(content);
-            $("#carousel").featureCarousel();
-            $(".carousel-container").show();
+        // $('#carousel').html('');
+        // $(".carousel-container").hide();
+
+        // var chkPassport = document.getElementById("way_"+id);
+        // let imagePath = $("#image_" + id).val();
+        // if (chkPassport.checked) {
+        //     imageArray.push(imagePath);
+        // } else {
+        //     remove(imageArray, imagePath);
+        // }
+        // if(imageArray.length !== 0) {
+        //     let content  = '';
+        //     $.each( imageArray, function( key, value ) {
+        //         $('<div class="carousel-feature"><a><img class="carousel-image" alt="Image Caption" src="'+value+'"></a></div>').appendTo('#carousel');
+        //     });
+        //     $("#carousel").featureCarousel();
+        //     $(".carousel-container").show();
             
-        } else {
-            $(".carousel-container").hide();
-        }
+        // } else {
+        //     $(".carousel-container").hide();
+        // }
 
+        // var $this = $(this);
+        // if ($(this).is(':checked')) {
+        //     $this.css('background-position','0px 0px');
+        //     $this.find(':checkbox').prop('checked',false);
+        //     $(existPath).each(function(i,obj){
+        //         if (obj[1] == $this.siblings('.rtId').val()) {
+        //             obj[0].setMap(null);
+        //             $(obj).splice(i , 1);
+        //             pathsCnt--;
+        //         }
+        //     });
+
+        // } else {
             
-
-            var $this = $(this);1
-            if ($(this).is(':checked')) {
-                console.log('if');
-                $this.css('background-position','0px 0px');
-                $this.find(':checkbox').prop('checked',false);
-                $(existPath).each(function(i,obj){
-                    if (obj[1] == $this.siblings('.rtId').val()) {
-                        obj[0].setMap(null);
-                        $(obj).splice(i , 1);
-                        pathsCnt--;
-                    }
-                });
-
-            } else {
-                // console.log('else');
-                $this.css('background-position','0px -16px');
-                $this.find(':checkbox').prop('checked',true);
-                existPath[pathsCnt]  = new Array();
-                var origin = $this.siblings('.rtOrig').val();
-                var des   = $this.siblings('.rtDest').val();                
-                //let wp   = $('#rtWp').val();
-                let wp = $("#rtWp_"+id).val();
-                // console.log(wp);
-                
-                var color = getRandomColor();
-                // alert(color);
-                // alert(wp);
-                var rander = {
-                    draggable :false,
-                    polylineOptions:{strokeColor:color}
-                };
-                if( wp == "" ) {
-                    existPath[pathsCnt][0] = showRoute(origin,des,rander);
-                } else {
-                    existPath[pathsCnt][0] = setroute(wp,rander);
-                }
-                existPath[pathsCnt][1] = $this.siblings('.rtId').val();
-                // console.log(existPath);
-                pathsCnt++;
-            }
-
-           
-        
-
-
-   
-
+        //     $this.css('background-position','0px -16px');
+        //     $this.find(':checkbox').prop('checked',true);
+        //     existPath[pathsCnt]  = new Array();
+        //     var origin = $this.siblings('.rtOrig').val();
+        //     var des   = $this.siblings('.rtDest').val();                
+        //     let wp = $("#rtWp_"+id).val();
+        //     var color = getRandomColor();
+        //     var rander = {
+        //         draggable :false,
+        //         polylineOptions:{strokeColor:color}
+        //     };
+        //     if( wp == "" ) {
+        //         existPath[pathsCnt][0] = showRoute(origin,des,rander);
+        //     } else {
+        //         existPath[pathsCnt][0] = setroute(wp,rander);
+        //     }
+        //     existPath[pathsCnt][1] = $this.siblings('.rtId').val();
+        //     console.log(existPath[pathsCnt]);
+        //     pathsCnt++;
+        // }
     }
-    //alert(colourArray);
+    
 
     // Let's make an array of requests which will become individual polylines on the map.
     function generateRequests(){
@@ -617,68 +587,100 @@
 
     $(document).ready(function() {
         var jsonArray = {
-        "Person 1": ["Surat","UDHNA","Navsari"],
-        "Person 2": ["ADAJAN","DAMKA","HAZIRA"]
-    }
+            "Person 1": ["Surat","UDHNA","Navsari"],
+            "Person 2": ["ADAJAN","DAMKA","HAZIRA"]
+        }
         
     // 16 Standard Colours for navigation polylines
         var colourArray = ['maroon','lime', 'navy', 'grey', 'fuchsia', 'black', 'white', 'purple', 'aqua', 'red', 'green', 'silver', 'olive', 'blue', 'yellow', 'teal'];
        
-       // $( ".chkRoute input[type='checkbox']" ).change(function() {
+        //$('.chkRoute').unbind('click').bind('click',function() {
 
-       //          var $this = $(this);
-       //               if( $this.find(':checkbox').prop('checked') )
-       //               {
+        $(document).on("click",".chkRoute",function(e) {
+            
+            $('#carousel').html('');
+            $(".carousel-container").hide();
+            
+            var $this = $(this);
+            var rtId = $this.siblings('.rtId').val();
+            let imagePath = $("#image_" + rtId).val();
+            //if( $this.find(':checkbox').prop('checked') ) {
+            if( $('#way_' + rtId).prop('checked') ) {
+                
+                imageArray.push(imagePath);
+                $this.css('background-position','0px -16px');
+                $this.find(':checkbox').prop('checked',true);
+                existPath[pathsCnt]  = new Array();
+                
+                var origin = $this.siblings('.rtOrig').val();
+                var des   = $this.siblings('.rtDest').val();
+                var wp   = $this.siblings('.rtWp').val();
+                var color = getRandomColor();
+                var rander = {
+                    draggable :false,
+                    polylineOptions:{strokeColor:color}
+                };
+                if( wp == "" ) {
+                    existPath[pathsCnt][0] = showRoute(origin,des,rander);
+                } else {
+                    existPath[pathsCnt][0] = setroute(wp,rander);
+                }
+                existPath[pathsCnt][1] = $this.siblings('.rtId').val();
+                pathsCnt++;
 
-       //                  alert("here");
+            } else {
 
-       //               }
-       //  // Check input( $( this ).val() ) for validity here
-       //  });
+                remove(imageArray, imagePath);
 
+                $this.css('background-position','0px 0px');
+                $this.find(':checkbox').prop('checked',false);
 
+                let current_id = $this.siblings('.rtId').val();
+                let lastcount = 1;
+                let len = existPath.length;
+                let existPathLastKeyNumber = '';
+                for (var k in existPath){
+                    if (typeof existPath[k] !== 'function') {
+                         if(current_id == existPath[k][1]) {
+                            existPath.splice([k], 1);
+                         }
+                    }
+                    lastcount++;
+                    if(lastcount == len) {
+                        existPathLastKeyNumber = k;
+                    }
+                }
 
-        // $('.chkRoute').unbind('click').bind('click',function(){
+                let pathLength = existPath.length;
+                var color = getRandomColor();
+                var rander = {
+                    draggable :false,
+                    polylineOptions:{strokeColor:color}
+                };
 
-        //     var $this = $(this);
-        //     if( $this.find(':checkbox').prop('checked') )
-        //     {
-        //         $this.css('background-position','0px 0px');
-        //         $this.find(':checkbox').prop('checked',false);
-        //         $(existPath).each(function(i,obj){
-        //             if (obj[1] == $this.siblings('.rtId').val())
-        //             {
-        //                 obj[0].setMap(null);
-        //                 $(obj).splice(i , 1);
-        //                 pathsCnt--;
-        //             }
-        //         });
-        //     }
-        //     else
-        //     {
-        //         $this.css('background-position','0px -16px');
-        //         $this.find(':checkbox').prop('checked',true);
-        //         existPath[pathsCnt]  = new Array();
-        //         var origin = $this.siblings('.rtOrig').val();
-        //         var des   = $this.siblings('.rtDest').val();
-        //         var wp   = $this.siblings('.rtWp').val();
-        //         var color = getRandomColor();
-        //         var rander = {
-        //             draggable :false,
-        //             polylineOptions:{strokeColor:color}
-        //         };
-        //         if( wp == "" )
-        //         {
-        //             existPath[pathsCnt][0] = showRoute(origin,des,rander);
-        //         }
-        //         else
-        //         {
-        //             existPath[pathsCnt][0] = setroute(wp,rander);
-        //         }
-        //         existPath[pathsCnt][1] = $this.siblings('.rtId').val();
-        //         pathsCnt++;
-        //     }
-        // });
+                if (pathLength == 0) {
+                    existPath = [];
+                    pathsCnt = 0;
+                    $(".city").trigger("change");
+                } else {
+                    let last_id = existPath[existPathLastKeyNumber][1];
+                    let wp = $('#rtWp_' + last_id).val();
+                    setroute(wp,rander);
+                }
+            }
+
+            if(imageArray.length !== 0) {
+                let content  = '';
+                $.each( imageArray, function( key, value ) {
+                    $('<div class="carousel-feature"><a><img class="carousel-image" alt="Image Caption" src="'+value+'"></a></div>').appendTo('#carousel');
+                });
+                $("#carousel").featureCarousel();
+                $(".carousel-container").show();
+                
+            } else {
+                $(".carousel-container").hide();
+            }
+        });
 
         // Javascript method's body can be found in assets/js/demos.js
         demo.initDashboardPageCharts();
@@ -687,48 +689,7 @@
     });
 </script>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        // $('#datatables').DataTable({
-        //     "pagingType": "full_numbers",
-        //     "lengthMenu": [
-        //         [10, 25, 50, -1],
-        //         [10, 25, 50, "All"]
-        //     ],
-        //     responsive: true,
-        //     language: {
-        //         search: "_INPUT_",
-        //         searchPlaceholder: "Search records",
-        //     }
 
-        // });
-
-
-        // var table = $('#datatables').DataTable();
-
-        // // Edit record
-        // table.on('click', '.edit', function() {
-        //     $tr = $(this).closest('tr');
-
-        //     var data = table.row($tr).data();
-        //     alert('You press on Row: ' + data[0] + ' ' + data[1] + ' ' + data[2] + '\'s row.');
-        // });
-
-        // // Delete a record
-        // table.on('click', '.remove', function(e) {
-        //     $tr = $(this).closest('tr');
-        //     table.row($tr).remove().draw();
-        //     e.preventDefault();
-        // });
-
-        // //Like record
-        // table.on('click', '.like', function() {
-        //     alert('You clicked on Like button');
-        // });
-
-        //$('.card .material-datatables label').addClass('form-group');
-    });
-</script>
 
 
 </html>

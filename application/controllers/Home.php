@@ -77,7 +77,7 @@ class Home extends CI_Controller {
 								$c++;
 							}
 						}
-						$output .= "<li><div  class='chkRoute'><input onclick='loadwaypointmap(".$key.");'  class='chkRoute' id="."way_".$key." name='waypoints[]' type='checkbox' >".$row['route_name']."<input type='hidden' class='rtId' value='1416100'>
+						$output .= "<li><div><input onclick='loadwaypointmap(".$key.");'  class='chkRoute' id="."way_".$key." name='waypoints[]' type='checkbox' >".$row['route_name']."<input type='hidden' class='rtId' value='".$key."'>
 		                <input type='hidden' class='rtOrig' value=''>
 		                <input type='hidden' class='rtDest' value=''>
 		                <input type='hidden' class='rtOlat' value='".$value['latitude']."'>
@@ -85,7 +85,7 @@ class Home extends CI_Controller {
 		                <input type='hidden' class='rtDlat' value='".$value['latitude']."'>
 		                <input type='hidden' class='rtDlng' value='".$value['longitude']."'>
 		                <input type='hidden' id="."image_".$key." value='".$value['image']."'>
-						<input type='hidden' id='rtWp_".$key."' value='{&quot;start&quot;:{&quot;lat&quot;:".$value['latitude'].",&quot;lng&quot;:".$value['longitude']."},&quot;end&quot;:{&quot;lat&quot;:".$value['latitude'].",&quot;lng&quot;:".$value['longitude']."},&quot;waypoints&quot;:[".$waypoints_latitude_longitude."]}'></div></li>";
+						<input type='hidden' class='rtWp' id='rtWp_".$key."' value='{&quot;start&quot;:{&quot;lat&quot;:".$value['latitude'].",&quot;lng&quot;:".$value['longitude']."},&quot;end&quot;:{&quot;lat&quot;:".$value['latitude'].",&quot;lng&quot;:".$value['longitude']."},&quot;waypoints&quot;:[".$waypoints_latitude_longitude."]}'></div></li>";
 					$cnt_new++;
 					}
 					
