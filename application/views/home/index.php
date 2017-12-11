@@ -1,13 +1,17 @@
+<div id="map"></div>
+
 <div class="carousel-container">
-	<div id="carousel">
-	</div>
-	<div id="carousel-left"><img src="assets/featurecarousel/images/arrow-left.png" /></div>
-  	<div id="carousel-right"><img src="assets/featurecarousel/images/arrow-right.png" /></div>
+    <div id="carousel">
+    </div>
+    <div id="carousel-left"><img src="assets/featurecarousel/images/arrow-left.png" /></div>
+    <div id="carousel-right"><img src="assets/featurecarousel/images/arrow-right.png" /></div>
 </div>
 
+<button class="btn btn-danger" id="slider_remove_btn">
+    <i class="material-icons">close</i> Remove Slider
+    <div class="ripple-container"></div>
+</button>
 
-
-<div id="map"></div>
 
 <div class="row" style="display: none">
     <div class="col-md-4">

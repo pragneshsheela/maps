@@ -48,7 +48,8 @@ class Home extends CI_Controller {
 				$route[$route_id] = [];
 				$route[$route_id]['latitude'] = $row['route_latitude'];
 				$route[$route_id]['longitude'] = $row['route_longitude'];
-				$route[$route_id]['image'] = $row['poi_image'];
+				//$route[$route_id]['image'] = $row['poi_image'];
+				$route[$route_id]['image'] = [];
 				$route[$route_id]['waypoints_latitude_longitude'] = [];
 			};
 
@@ -57,12 +58,17 @@ class Home extends CI_Controller {
 				array_push($route[$route_id]['waypoints_latitude_longitude'], $temp);
 			}
 
+			if($row['poi_image']) {
+				array_push($route[$route_id]['image'], $row['poi_image']);
+			}
+
 			$cnt++;
 			if($cnt  == $len) {
 				$cnt_new = 1;
 				foreach ($route as $key => $value) {
 
 					if($key) {
+						$slider_image = '';
 						if(count($value['waypoints_latitude_longitude']) !== 0) {
 							$waypoints_latitude_longitude = '';
 							$c=1;
@@ -77,14 +83,16 @@ class Home extends CI_Controller {
 								$c++;
 							}
 						}
-						$output .= "<li><div><input onclick='loadwaypointmap(".$key.");'  class='chkRoute' id="."way_".$key." name='waypoints[]' type='checkbox' >".$row['route_name']."<input type='hidden' class='rtId' value='".$key."'>
+						$slider_image .= implode(",", $value['image']);
+						
+						$output .= "<li><div><input onclick='loadwaypointmap(".$key.");'  class='chkRoute' id="."way_".$key." name='waypoints[]' type='checkbox' ><span onclick='routeFun(".$key.");' class='cursor_pointer'>".$row['route_name']."</span><input type='hidden' class='rtId' value='".$key."'>
 		                <input type='hidden' class='rtOrig' value=''>
 		                <input type='hidden' class='rtDest' value=''>
 		                <input type='hidden' class='rtOlat' value='".$value['latitude']."'>
 		                <input type='hidden' class='rtOlng' value='".$value['longitude']."'>
 		                <input type='hidden' class='rtDlat' value='".$value['latitude']."'>
 		                <input type='hidden' class='rtDlng' value='".$value['longitude']."'>
-		                <input type='hidden' id="."image_".$key." value='".$value['image']."'>
+		                <input type='hidden' id="."image_".$key." value='".$slider_image."'>
 						<input type='hidden' class='rtWp' id='rtWp_".$key."' value='{&quot;start&quot;:{&quot;lat&quot;:".$value['latitude'].",&quot;lng&quot;:".$value['longitude']."},&quot;end&quot;:{&quot;lat&quot;:".$value['latitude'].",&quot;lng&quot;:".$value['longitude']."},&quot;waypoints&quot;:[".$waypoints_latitude_longitude."]}'></div></li>";
 					$cnt_new++;
 					}

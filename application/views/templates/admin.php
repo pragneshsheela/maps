@@ -215,7 +215,7 @@
             </nav>
             
             <?php echo $body; ?>
-        +/div>
+        </div>
     </div>
 </body>
 <!--   Core JS Files   -->
@@ -265,6 +265,7 @@
 
   var imageArray = new Array();
   $(".carousel-container").hide();
+  $("#slider_remove_btn").hide();
 </script>
 
 
@@ -301,7 +302,7 @@
                         $("#route").append(data);  
                      }  
                   }); 
-                 generateRequests();
+                 //generateRequests();
             }
           })
         })
@@ -316,7 +317,7 @@
         };
             
         map = new google.maps.Map(document.getElementById('map'), mapOptions);
-        generateRequests();
+        //generateRequests();
     }
 
 
@@ -598,16 +599,16 @@
 
         $(document).on("click",".chkRoute",function(e) {
             
-            $('#carousel').html('');
-            $(".carousel-container").hide();
+            // $('#carousel').html('');
+            // $(".carousel-container").hide();
             
             var $this = $(this);
             var rtId = $this.siblings('.rtId').val();
-            let imagePath = $("#image_" + rtId).val();
+            //let imagePath = $("#image_" + rtId).val();
             //if( $this.find(':checkbox').prop('checked') ) {
             if( $('#way_' + rtId).prop('checked') ) {
                 
-                imageArray.push(imagePath);
+                //imageArray.push(imagePath);
                 $this.css('background-position','0px -16px');
                 $this.find(':checkbox').prop('checked',true);
                 existPath[pathsCnt]  = new Array();
@@ -630,7 +631,7 @@
 
             } else {
 
-                remove(imageArray, imagePath);
+                //remove(imageArray, imagePath);
 
                 $this.css('background-position','0px 0px');
                 $this.find(':checkbox').prop('checked',false);
@@ -669,27 +670,60 @@
                 }
             }
 
-            if(imageArray.length !== 0) {
-                let content  = '';
-                $.each( imageArray, function( key, value ) {
-                    $('<div class="carousel-feature"><a><img class="carousel-image" alt="Image Caption" src="'+value+'"></a></div>').appendTo('#carousel');
-                });
-                $("#carousel").featureCarousel();
-                $(".carousel-container").show();
+            // if(imageArray.length !== 0) {
+            //     let content  = '';
+            //     $.each( imageArray, function( key, value ) {
+            //         $('<div class="carousel-feature"><a><img class="carousel-image" alt="Image Caption" src="'+value+'" id="slider_image_'+rtId+'"></a></div>').appendTo('#carousel');
+            //     });
+            //     $("#carousel").featureCarousel();
+            //     $(".carousel-container").show();
                 
-            } else {
-                $(".carousel-container").hide();
-            }
+            // } else {
+            //     $(".carousel-container").hide();
+            // }
         });
 
         // Javascript method's body can be found in assets/js/demos.js
         demo.initDashboardPageCharts();
 
         demo.initVectorMap();
+
+        $('#slider_remove_btn').click(function(){
+            $('#carousel').html('');
+            $(".carousel-container").hide();
+            $("#slider_remove_btn").hide();
+        });
+        
     });
+
+    function routeFun(id) {
+        $('#carousel').html('');
+        $(".carousel-container").hide();
+        $("#slider_remove_btn").hide();
+        let getAllImages = $("#image_" + id).val();
+        let slider_images;
+        if(getAllImages !== '') {
+            slider_images = getAllImages.split(",");
+            let content  = '';
+            slider_images.forEach(function(element) {
+                $('<div class="carousel-feature"><a><img class="carousel-image" alt="Image Caption" src="'+element+'"></a></div>').appendTo('#carousel');
+            });
+            $("#carousel").featureCarousel();
+            $(".carousel-container").show();
+            $("#slider_remove_btn").show();
+        } else {
+            $('#carousel').html('');
+            $(".carousel-container").hide();
+            $("#slider_remove_btn").hide();
+        }
+    }
 </script>
 
-
+<style type="text/css">
+    .cursor_pointer {
+        cursor: pointer;
+    }
+</style>
 
 
 </html>
