@@ -98,58 +98,42 @@
                 </div>
                 <ul class="nav">
 
-                     <?php
-                        $options_cities = array('' => "Select");
-                                  foreach ($cities as $row)
-                                  {
-                                    $options_cities[$row['city_id']."-".$row['city_name']] = $row['city_name'];
-                                  }
+                    <li>
+                        <div class="control-group">
+                            <label for="city_id" class="control-label">City Search</label>
+                            <div class="controls">
+                                <div class="form-group">
+                                    
+                                    <select 
+                                        class="city selectbox form-control required" 
+                                        id="postcode" 
+                                        name="postcode">
+                                        
+                                    </select>
+                                    <span class="material-input"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
 
-                                  ?>
                         <?php
-                      echo '<li class="active"><div class="control-group">';
-                        echo '<label for="city_id" for="inputError" class="control-label">City Name</label>';
-                        echo '<div  class="controls">';
-                          //echo form_dropdown('manufacture_id', $options_manufacture, '', 'class="span2"');
-                          
-                          echo form_dropdown('city_id', $options_cities, set_value('city_id'),'class="city span2 form-control select2-allow-clear"', 'id="single-append-text"','placeholder="Select Customer Name"' );
+                            // $options_cities = array('' => "Select");
+                            // foreach ($cities as $row){
+                            //     $options_cities[$row['city_id']."-".$row['city_name']] = $row['city_name'];
+                            // }
 
-                        echo '</div>';
-                      echo '</div>';
-                      echo '<input type="hidden" id="select2-name" name="date" value="Select City Name"  ></li>';
                         ?>
-
                         <?php
-                            // if($routes){
-                            //       $options_routes = array('' => "Select Route Name");
-                            //       foreach ($routes as $row)
-                            //       {
-                            //         $options_routes[$row['route_id']] = $row['route_name'];
-                            //       }}else{
-                            //         $options_routes = array('' => "Select Route Name ");
-                            //       }
-
-                            //       $js = array(
-                            //                 'class' => 'route span2 form-control select2-allow-clear',
-                            //                 'onChange' => 'some_function();',
-                            //                 'multiple' => 'multiple'
-                            //         );
-
-
-                                  ?>                               
-
-
-                        <?php
-                        // echo '<li ><div class="control-group">';
-                        // echo '<label for="route_id" for="inputError" class="control-label">Route Name</label>';
-                        // echo '<div  class="controls">';
-                        //   //echo form_dropdown('manufacture_id', $options_manufacture, '', 'class="span2"');
+                      // echo '<li class="active"><div class="control-group">';
+                      //   echo '<label for="city_id" for="inputError" class="control-label">City Name</label>';
+                      //   echo '<div  class="controls">';
                           
-                        //   echo form_dropdown('route_id', $options_routes, set_value('route_id'),$js );
+                          
+                      //     echo form_dropdown('city_id', $options_cities, set_value('city_id'),'class="city span2 form-control select2-allow-clear"', 'id="single-append-text"','placeholder="Select Customer Name"' );
 
-                        // echo '</div>';
-                        // echo '</div>';
-                        // echo '<input type="hidden" id="select2-name" name="date4" value="Select Route Name"  ></li>';
+                      //   echo '</div>';
+                      // echo '</div>';
+                      // echo '<input type="hidden" id="select2-name" name="date" value="Select City Name"  ></li>';
                         ?>
                         <li class="route" >Route Name</li>
                         <li>
@@ -265,6 +249,9 @@
 
 <script src="assets/featurecarousel/js/jquery.featureCarousel.js" type="text/javascript" charset="utf-8"></script>
 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+
 <script type="text/javascript">
 
   var imageArray = new Array();
@@ -275,14 +262,14 @@
 
 <script type="text/javascript">
 
- $(".city").on("change keyup", function() {
+    $(".city").on("change keyup", function() {
 
-          var city = $(this).val()
-          var res = city.split("-");
-          var cityid = res[0];
-          var cityname = res[1];
+        var dataTemp = $('#postcode').select2('data');
+
+        let cityid = dataTemp[0].id;
+        let cityname = dataTemp[0].text;
+
           $.getJSON("https://maps.googleapis.com/maps/api/geocode/json?address="+cityname, function(val) {
-          //$.getJSON("https://maps.googleapis.com/maps/api/geocode/json?address="+encodeURIComponent(city), function(val) {
             if(val.results.length) {
               var location = val.results[0].geometry.location
               var citylat = location.lat;
@@ -299,17 +286,14 @@
                         type: "POST",
                         dataType: "html",
                         success:function(data){  
-                            //alert("here");
-                           // alert(data);
-                        //console.log(data);
                         $("#route").html('');  
                         $("#route").append(data);  
                      }  
                   }); 
-                 //generateRequests();
+                 
             }
           })
-        })
+    })
 
     function loadcitymap(){
 
@@ -377,16 +361,7 @@
     var requestArray = [], renderArray = [];
     var pathsCnt = 0;
 
-     // A JSON Array containing some people/routes and the destinations/stops
-    var jsonArray = {
-        "Person 1": ["Surat","UDHNA","Navsari"],
-        "Person 2": ["ADAJAN","DAMKA","HAZIRA"]
-    }
-        
-    // 16 Standard Colours for navigation polylines
-    var colourArray = ['maroon','lime', 'navy', 'grey', 'fuchsia', 'black', 'white', 'purple', 'aqua', 'red', 'green', 'silver', 'olive', 'blue', 'yellow', 'teal'];
-    
-
+     
     function getRandomColor() {
         var letters = '0123456789ABCDEF'.split('');
         var color = '#';
@@ -401,191 +376,6 @@
         const index = array.indexOf(element);
         array.splice(index, 1);
     }
-
-
-    function loadwaypointmap(id){
-
-        // $('#carousel').html('');
-        // $(".carousel-container").hide();
-
-        // var chkPassport = document.getElementById("way_"+id);
-        // let imagePath = $("#image_" + id).val();
-        // if (chkPassport.checked) {
-        //     imageArray.push(imagePath);
-        // } else {
-        //     remove(imageArray, imagePath);
-        // }
-        // if(imageArray.length !== 0) {
-        //     let content  = '';
-        //     $.each( imageArray, function( key, value ) {
-        //         $('<div class="carousel-feature"><a><img class="carousel-image" alt="Image Caption" src="'+value+'"></a></div>').appendTo('#carousel');
-        //     });
-        //     $("#carousel").featureCarousel();
-        //     $(".carousel-container").show();
-            
-        // } else {
-        //     $(".carousel-container").hide();
-        // }
-
-        // var $this = $(this);
-        // if ($(this).is(':checked')) {
-        //     $this.css('background-position','0px 0px');
-        //     $this.find(':checkbox').prop('checked',false);
-        //     $(existPath).each(function(i,obj){
-        //         if (obj[1] == $this.siblings('.rtId').val()) {
-        //             obj[0].setMap(null);
-        //             $(obj).splice(i , 1);
-        //             pathsCnt--;
-        //         }
-        //     });
-
-        // } else {
-            
-        //     $this.css('background-position','0px -16px');
-        //     $this.find(':checkbox').prop('checked',true);
-        //     existPath[pathsCnt]  = new Array();
-        //     var origin = $this.siblings('.rtOrig').val();
-        //     var des   = $this.siblings('.rtDest').val();                
-        //     let wp = $("#rtWp_"+id).val();
-        //     var color = getRandomColor();
-        //     var rander = {
-        //         draggable :false,
-        //         polylineOptions:{strokeColor:color}
-        //     };
-        //     if( wp == "" ) {
-        //         existPath[pathsCnt][0] = showRoute(origin,des,rander);
-        //     } else {
-        //         existPath[pathsCnt][0] = setroute(wp,rander);
-        //     }
-        //     existPath[pathsCnt][1] = $this.siblings('.rtId').val();
-        //     console.log(existPath[pathsCnt]);
-        //     pathsCnt++;
-        // }
-    }
-    
-
-    // Let's make an array of requests which will become individual polylines on the map.
-    function generateRequests(){
-
-        requestArray = [];
-
-        for (var route in jsonArray){
-            // This now deals with one of the people / routes
-
-            // Somewhere to store the wayoints
-            var waypts = [];
-            
-            // 'start' and 'finish' will be the routes origin and destination
-            var start, finish
-            
-            // lastpoint is used to ensure that duplicate waypoints are stripped
-            var lastpoint
-
-            data = jsonArray[route]
-
-            limit = data.length
-            for (var waypoint = 0; waypoint < limit; waypoint++) {
-                if (data[waypoint] === lastpoint){
-                    // Duplicate of of the last waypoint - don't bother
-                    continue;
-                }
-                
-                // Prepare the lastpoint for the next loop
-                lastpoint = data[waypoint]
-
-                // Add this to waypoint to the array for making the request
-                waypts.push({
-                    location: data[waypoint],
-                    stopover: true
-                });
-            }
-
-            // Grab the first waypoint for the 'start' location
-            start = (waypts.shift()).location;
-            // Grab the last waypoint for use as a 'finish' location
-            finish = waypts.pop();
-            if(finish === undefined){
-                // Unless there was no finish location for some reason?
-                finish = start;
-            } else {
-                finish = finish.location;
-            }
-
-            // Let's create the Google Maps request object
-            var request = {
-                origin: start,
-                destination: finish,
-                waypoints: waypts,
-                travelMode: google.maps.TravelMode.DRIVING
-            };
-
-            // and save it in our requestArray
-            requestArray.push({"route": route, "request": request});
-        }
-
-        processRequests();
-    }
-
-    function processRequests(){
-
-        // Counter to track request submission and process one at a time;
-        var i = 0;
-
-        // Used to submit the request 'i'
-        function submitRequest(){
-            directionsService.route(requestArray[i].request, directionResults);
-        }
-
-        // Used as callback for the above request for current 'i'
-        function directionResults(result, status) {
-            if (status == google.maps.DirectionsStatus.OK) {
-                
-                // Create a unique DirectionsRenderer 'i'
-                renderArray[i] = new google.maps.DirectionsRenderer();
-                renderArray[i].setMap(map);
-
-                // Some unique options from the colorArray so we can see the routes
-                renderArray[i].setOptions({
-                    preserveViewport: true,
-                    suppressInfoWindows: true,
-                    polylineOptions: {
-                        strokeWeight: 4,
-                        strokeOpacity: 0.8,
-                        strokeColor: colourArray[i]
-                    },
-                    markerOptions:{
-                        icon:{
-                            path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-                            scale: 3,
-                            strokeColor: colourArray[i]
-                        }
-                    }
-                });
-
-                // Use this new renderer with the result
-                renderArray[i].setDirections(result);
-                // and start the next request
-                nextRequest();
-            }
-
-        }
-
-        function nextRequest(){
-            // Increase the counter
-            i++;
-            // Make sure we are still waiting for a request
-            if(i >= requestArray.length){
-                // No more to do
-                return;
-            }
-            // Submit another request
-            submitRequest();
-        }
-
-        // This request is just to kick start the whole process
-        submitRequest();
-    }
-
 </script>        
 
 <script type="text/javascript">
@@ -599,20 +389,15 @@
     // 16 Standard Colours for navigation polylines
         var colourArray = ['maroon','lime', 'navy', 'grey', 'fuchsia', 'black', 'white', 'purple', 'aqua', 'red', 'green', 'silver', 'olive', 'blue', 'yellow', 'teal'];
        
-        //$('.chkRoute').unbind('click').bind('click',function() {
-
         $(document).on("click",".chkRoute",function(e) {
             
-            // $('#carousel').html('');
-            // $(".carousel-container").hide();
             
             var $this = $(this);
             var rtId = $this.siblings('.rtId').val();
-            //let imagePath = $("#image_" + rtId).val();
-            //if( $this.find(':checkbox').prop('checked') ) {
+            
             if( $('#way_' + rtId).prop('checked') ) {
                 
-                //imageArray.push(imagePath);
+                
                 $this.css('background-position','0px -16px');
                 $this.find(':checkbox').prop('checked',true);
                 existPath[pathsCnt]  = new Array();
@@ -634,8 +419,6 @@
                 pathsCnt++;
 
             } else {
-
-                //remove(imageArray, imagePath);
 
                 $this.css('background-position','0px 0px');
                 $this.find(':checkbox').prop('checked',false);
@@ -674,17 +457,7 @@
                 }
             }
 
-            // if(imageArray.length !== 0) {
-            //     let content  = '';
-            //     $.each( imageArray, function( key, value ) {
-            //         $('<div class="carousel-feature"><a><img class="carousel-image" alt="Image Caption" src="'+value+'" id="slider_image_'+rtId+'"></a></div>').appendTo('#carousel');
-            //     });
-            //     $("#carousel").featureCarousel();
-            //     $(".carousel-container").show();
-                
-            // } else {
-            //     $(".carousel-container").hide();
-            // }
+            
         });
 
         // Javascript method's body can be found in assets/js/demos.js
@@ -738,6 +511,23 @@
             $("#slider_remove_btn").hide();
         }
     }
+</script>
+
+<script type="text/javascript">
+     $('#postcode').select2({
+        placeholder: '--- Select Item ---',
+        ajax: {
+          url: '<?php echo base_url(); ?>/home/search',
+          dataType: 'json',
+          delay: 250,
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+    });
 </script>
 
 <style type="text/css">
