@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Waypoints in directions</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzJPzAiUl4hKQ0mPNYe1AuyA6ByOs_k9Y&sensor=false"></script>
+     <script type="text/javascript">
+        $("document").ready(function(){
+            alert("ddd");
+          $.ajax({
+                 type: "POST",
+                 url: "city.php",                 
+                 cache: false,
+                 success: function(result){
+                        alert(result);
+                 //   $("#"+loadType+"_loader").hide();
+                 //   $("#"+loadType+"_dropdown").
+                 //   html("<option value='-1'>Select "+loadType+"</option>");
+                 //   $("#"+loadType+"_dropdown").append(result);
+                 // }
+                 }
+               });   
+          
+
+        $(".js-ajax-php-json").submit(function(){
+        var data = {
+        "action": "test"
+        };
+        data = $(this).serialize() + "&" + $.param(data);
+        $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "response.php", //Relative or absolute path to response.php file
+        data: data,
+        success: function(data) {
+        $(".the-return").html(
+        "Favorite beverage: " + data["favorite_beverage"] + "<br />Favorite restaurant: " + data["favorite_restaurant"] + "<br />Gender: " + data["gender"] + "<br />JSON: " + data["json"]
+        );
+        alert("Form submitted successfully.\nReturned json: " + data["json"]);
+        }
+        });
+        return false;
+        });
+        });
+        </script>
+
+    <script type="text/javascript">
+
+    // Initialise some variables
+    var directionsService = new google.maps.DirectionsService();
+    var num, map, data;
+    var requestArray = [], renderArray = [];
+
+    // A JSON Array containing some people/routes and the destinations/stops
+    var jsonArray = {
+        "Person 1": ["Surat","UDHNA","Navsari"],
+        "Person 2": ["ADAJAN","DAMKA","HAZIRA"]
+    }
+        
+    // 16 Standard Colours for navigation polylines
+    var colourArray = ['maroon','lime', 'navy', 'grey', 'fuchsia', 'black', 'white', 'purple', 'aqua', 'red', 'green', 'silver', 'olive', 'blue', 'yellow', 'teal'];
+
+    // Let's make an array of requests which will become individual polylines on the map.
+    function generateRequests(){
+
+        requestArray = [];
+
+        for (var route in jsonArray){
+            // This now deals with one of the people / routes
+
+            // Somewhere to store the wayoints
+            var waypts = [];
+            
+            // 'start' and 'finish' will be the routes origin and destination
+            var start, finish
+            
+            // lastpoint is used to ensure that duplicate waypoints are stripped
+            var lastpoint
+
+            data = jsonArray[route]
+
+            limit = data.length
+            for (var waypoint = 0; waypoint < limit; waypoint++) {
+                if (data[waypoint] === lastpoint){
+                    // Duplicate of of the last waypoint - don't bother
+                    continue;
+                }
+                
+                // Prepare the lastpoint for the next loop
+                lastpoint = data[waypoint]
+
+                // Add this to waypoint to the array for making the request
+                waypts.push({
+                    location: data[waypoint],
+                    stopover: true
+                });
+            }
+
+            // Grab the first waypoint for the 'start' location
+            start = (waypts.shift()).location;
+            // Grab the last waypoint for use as a 'finish' location
+            finish = waypts.pop();
+            if(finish === undefined){
+                // Unless there was no finish location for some reason?
+                finish = start;
+            } else {
+                finish = finish.location;
+            }
+
+            // Let's create the Google Maps request object
+            var request = {
+                origin: start,
+                destination: finish,
+                waypoints: waypts,
+                travelMode: google.maps.TravelMode.DRIVING
+            };
+
+            // and save it in our requestArray
+            requestArray.push({"route": route, "request": request});
+        }
+
+        processRequests();
+    }
+
+    function processRequests(){
+
+        // Counter to track request submission and process one at a time;
+        var i = 0;
+
+        // Used to submit the request 'i'
+        function submitRequest(){
+            directionsService.route(requestArray[i].request, directionResults);
+        }
+
+        // Used as callback for the above request for current 'i'
+        function directionResults(result, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+                
+                // Create a unique DirectionsRenderer 'i'
+                renderArray[i] = new google.maps.DirectionsRenderer();
+                renderArray[i].setMap(map);
+
+                // Some unique options from the colorArray so we can see the routes
+                renderArray[i].setOptions({
+                    preserveViewport: true,
+                    suppressInfoWindows: true,
+                    polylineOptions: {
+                        strokeWeight: 4,
+                        strokeOpacity: 0.8,
+                        strokeColor: colourArray[i]
+                    },
+                    markerOptions:{
+                        icon:{
+                            path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                            scale: 3,
+                            strokeColor: colourArray[i]
+                        }
+                    }
+                });
+
+                // Use this new renderer with the result
+                renderArray[i].setDirections(result);
+                // and start the next request
+                nextRequest();
+            }
+
+        }
+
+        function nextRequest(){
+            // Increase the counter
+            i++;
+            // Make sure we are still waiting for a request
+            if(i >= requestArray.length){
+                // No more to do
+                return;
+            }
+            // Submit another request
+            submitRequest();
+        }
+
+        // This request is just to kick start the whole process
+        submitRequest();
+    }
+
+    // Called Onload
+    function init() {
+
+        // Some basic map setup (from the API docs) 
+        var mapOptions = {
+            center: new google.maps.LatLng(22.309425, 72.136230),
+            zoom: 12,
+            mapTypeControl: true,            
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+            
+        map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+        // Start the request making
+        generateRequests()
+    }
+
+    // Get the ball rolling and trigger our init() on 'load'
+    google.maps.event.addDomListener(window, 'load', init);
+    </script> 
+
+
+    <style>
+      #right-panel {
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+      }
+
+      #right-panel select, #right-panel input {
+        font-size: 15px;
+      }
+
+      #right-panel select {
+        width: 100%;
+      }
+
+      #right-panel i {
+        font-size: 12px;
+      }
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map-canvas {
+        height: 100%;
+        float: left;
+        width: 70%;
+        height: 100%;
+      }
+      #right-panel {
+        margin: 20px;
+        border-width: 2px;
+        width: 20%;
+        height: 400px;
+        float: left;
+        text-align: left;
+        padding-top: 0;
+      }
+      .directions-panel {
+        margin-top: 10px;
+        background-color: #FFEE77;
+        padding: 10px;
+        overflow: scroll;
+        height: 174px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+    <div id="right-panel">
+    <div>
+    <b>Start:</b>
+    <select id="start">
+      <option value="Halifax, NS">Halifax, NS</option>
+      <option value="Boston, MA">Boston, MA</option>
+      <option value="New York, NY">New York, NY</option>
+      <option value="Miami, FL">Miami, FL</option>
+    </select>
+    <br>
+    <b>Waypoints:</b> <br>
+    <i>(Ctrl+Click or Cmd+Click for multiple selection)</i> <br>
+    <select multiple id="waypoints">
+      <option value="montreal, quebec">Montreal, QBC</option>
+      <option value="toronto, ont">Toronto, ONT</option>
+      <option value="chicago, il">Chicago</option>
+      <option value="winnipeg, mb">Winnipeg</option>
+      <option value="fargo, nd">Fargo</option>
+      <option value="calgary, ab">Calgary</option>
+      <option value="spokane, wa">Spokane</option>
+    </select>
+    <br>
+    <b>End:</b>
+    <select id="end">
+      <option value="Vancouver, BC">Vancouver, BC</option>
+      <option value="Seattle, WA">Seattle, WA</option>
+      <option value="San Francisco, CA">San Francisco, CA</option>
+      <option value="Los Angeles, CA">Los Angeles, CA</option>
+    </select>
+    <br>
+      <input type="submit" id="submit">
+    </div>
+
+    <!--<div id="directions-panel"></div> -->
+    <div class="directions-panel" id="map-canvas"></div>
+    </div>
+
+    <!-- All of the script for multiple requests -->
+
+
+   
+
+    <!-- <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzJPzAiUl4hKQ0mPNYe1AuyA6ByOs_k9Y&callback=initMap">
+    </script> -->
+  </body>
+</html>

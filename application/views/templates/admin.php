@@ -25,12 +25,19 @@
     <!--     Fonts and icons     -->
     <link href="assets/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons" />
+
+    <link rel="stylesheet" href="assets/featurecarousel/css/feature-carousel.css" charset="utf-8" />
+    <style type="text/css">
+        .carousel-container {
+            width: 100% !important;
+        }
+    </style>
+
     <script type="text/javascript">
 
     // Initialise some variables
     // Called Onload
     function init() {
-
         // Some basic map setup (from the API docs) 
         var mapOptions = {
             center: new google.maps.LatLng(20.593684, 78.96288),
@@ -157,6 +164,8 @@
                                 
                             </ul>
                         </div>
+
+                        
                 </li>   
 
                   
@@ -208,34 +217,8 @@
                     </div>
                 </div>
             </nav>
-
+            
             <?php echo $body; ?>
-
-            <!-- <footer class="footer">
-                <div class="container-fluid">
-                    <nav class="pull-left">
-                        <ul>
-                            <li>
-                                <a href="#">
-                                    Home
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Company
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <p class="copyright pull-right">
-                        &copy;
-                        <script>
-                            document.write(new Date().getFullYear())
-                        </script>
-                        <a href="#">Role and Permission Web Portal</a>, made with love for a better web
-                    </p>
-                </div>
-            </footer> -->
         </div>
     </div>
 </body>
@@ -279,7 +262,19 @@
 <script src="assets/js/material-dashboard.js"></script>
 <!-- Material Dashboard DEMO methods, don't include it in your project! -->
 <script src="assets/js/demo.js"></script>
+
+<script src="assets/featurecarousel/js/jquery.featureCarousel.js" type="text/javascript" charset="utf-8"></script>
+
 <script type="text/javascript">
+
+  var imageArray = new Array();
+  $(".carousel-container").hide();
+  $("#slider_remove_btn").hide();
+</script>
+
+
+<script type="text/javascript">
+
  $(".city").on("change keyup", function() {
 
           var city = $(this).val()
@@ -306,10 +301,12 @@
                         success:function(data){  
                             //alert("here");
                            // alert(data);
+                        //console.log(data);
+                        $("#route").html('');  
                         $("#route").append(data);  
                      }  
                   }); 
-                 generateRequests();
+                 //generateRequests();
             }
           })
         })
@@ -324,7 +321,7 @@
         };
             
         map = new google.maps.Map(document.getElementById('map'), mapOptions);
-        generateRequests();
+        //generateRequests();
     }
 
 
@@ -349,20 +346,19 @@
     }
 
     // having waypoints
-    function setroute(wps,rendererOptions)
-    {
+    function setroute(wps,rendererOptions) {
         var wp = [];
         var os = $.parseJSON(wps);
         var obj = new google.maps.DirectionsRenderer(rendererOptions);
+
         for(var i=0;i<os.waypoints.length;i++)
-            wp[i] = {'location': new google.maps.LatLng(os.waypoints[i][0], os.waypoints[i][1]),'stopover':false }
+            wp[i] = {'location': new google.maps.LatLng(os.waypoints[i][0], os.waypoints[i][1]),'stopover':true }
 
         var request = {
             origin: new google.maps.LatLng(os.start.lat,os.start.lng),
             destination: new google.maps.LatLng(os.end.lat,os.end.lng),
             waypoints: wp,
-            optimizeWaypoints: true,
-            travelMode: 'DRIVING'
+            travelMode: google.maps.TravelMode.DRIVING
         };
 
         directionsService.route(request, function(response, status) {
@@ -374,10 +370,6 @@
 
         return obj;
     }
-
-    
-
-    
 
     var existPath = new Array();    
     var directionsService = new google.maps.DirectionsService();
@@ -396,68 +388,81 @@
     
 
     function getRandomColor() {
-    var letters = '0123456789ABCDEF'.split('');
-    var color = '#';
-    for (var i = 0; i < 6; i++ ) {
-        color += letters[Math.round(Math.random() * 15)];
-    }
-    return color;
+        var letters = '0123456789ABCDEF'.split('');
+        var color = '#';
+        for (var i = 0; i < 6; i++ ) {
+            color += letters[Math.round(Math.random() * 15)];
+        }
+        return color;
     } 
 
 
-    function loadwaypointmap(){
-
-            var $this = $(this);
-
-            if ($(this).is(':checked')) {
-            
-                 $this.css('background-position','0px 0px');
-                $this.find(':checkbox').prop('checked',false);
-                $(existPath).each(function(i,obj){
-                    if (obj[1] == $this.siblings('.rtId').val())
-                    {
-                        obj[0].setMap(null);
-                        $(obj).splice(i , 1);
-                        pathsCnt--;
-                    }
-                });
-            }else{
-
-                $this.css('background-position','0px -16px');
-                $this.find(':checkbox').prop('checked',true);
-                existPath[pathsCnt]  = new Array();
-                var origin = $this.siblings('.rtOrig').val();
-                var des   = $this.siblings('.rtDest').val();                
-                var wp   = $('#rtWp').val();
-                var color = getRandomColor();
-                alert(color);
-                alert(wp);
-                var rander = {
-                    draggable :false,
-                    polylineOptions:{strokeColor:color}
-                };
-                if( wp == "" )
-                {
-                    existPath[pathsCnt][0] = showRoute(origin,des,rander);
-                }
-                else
-                {
-                    existPath[pathsCnt][0] = setroute(wp,rander);
-                }
-                existPath[pathsCnt][1] = $this.siblings('.rtId').val();
-                pathsCnt++;
-
-
-            }
-
-           
-        
-
-
-   
-
+    function remove(array, element) {
+        const index = array.indexOf(element);
+        array.splice(index, 1);
     }
-    //alert(colourArray);
+
+
+    function loadwaypointmap(id){
+
+        // $('#carousel').html('');
+        // $(".carousel-container").hide();
+
+        // var chkPassport = document.getElementById("way_"+id);
+        // let imagePath = $("#image_" + id).val();
+        // if (chkPassport.checked) {
+        //     imageArray.push(imagePath);
+        // } else {
+        //     remove(imageArray, imagePath);
+        // }
+        // if(imageArray.length !== 0) {
+        //     let content  = '';
+        //     $.each( imageArray, function( key, value ) {
+        //         $('<div class="carousel-feature"><a><img class="carousel-image" alt="Image Caption" src="'+value+'"></a></div>').appendTo('#carousel');
+        //     });
+        //     $("#carousel").featureCarousel();
+        //     $(".carousel-container").show();
+            
+        // } else {
+        //     $(".carousel-container").hide();
+        // }
+
+        // var $this = $(this);
+        // if ($(this).is(':checked')) {
+        //     $this.css('background-position','0px 0px');
+        //     $this.find(':checkbox').prop('checked',false);
+        //     $(existPath).each(function(i,obj){
+        //         if (obj[1] == $this.siblings('.rtId').val()) {
+        //             obj[0].setMap(null);
+        //             $(obj).splice(i , 1);
+        //             pathsCnt--;
+        //         }
+        //     });
+
+        // } else {
+            
+        //     $this.css('background-position','0px -16px');
+        //     $this.find(':checkbox').prop('checked',true);
+        //     existPath[pathsCnt]  = new Array();
+        //     var origin = $this.siblings('.rtOrig').val();
+        //     var des   = $this.siblings('.rtDest').val();                
+        //     let wp = $("#rtWp_"+id).val();
+        //     var color = getRandomColor();
+        //     var rander = {
+        //         draggable :false,
+        //         polylineOptions:{strokeColor:color}
+        //     };
+        //     if( wp == "" ) {
+        //         existPath[pathsCnt][0] = showRoute(origin,des,rander);
+        //     } else {
+        //         existPath[pathsCnt][0] = setroute(wp,rander);
+        //     }
+        //     existPath[pathsCnt][1] = $this.siblings('.rtId').val();
+        //     console.log(existPath[pathsCnt]);
+        //     pathsCnt++;
+        // }
+    }
+    
 
     // Let's make an array of requests which will become individual polylines on the map.
     function generateRequests(){
@@ -587,116 +592,159 @@
 
     $(document).ready(function() {
         var jsonArray = {
-        "Person 1": ["Surat","UDHNA","Navsari"],
-        "Person 2": ["ADAJAN","DAMKA","HAZIRA"]
-    }
+            "Person 1": ["Surat","UDHNA","Navsari"],
+            "Person 2": ["ADAJAN","DAMKA","HAZIRA"]
+        }
         
     // 16 Standard Colours for navigation polylines
         var colourArray = ['maroon','lime', 'navy', 'grey', 'fuchsia', 'black', 'white', 'purple', 'aqua', 'red', 'green', 'silver', 'olive', 'blue', 'yellow', 'teal'];
        
-       // $( ".chkRoute input[type='checkbox']" ).change(function() {
+        //$('.chkRoute').unbind('click').bind('click',function() {
 
-       //          var $this = $(this);
-       //               if( $this.find(':checkbox').prop('checked') )
-       //               {
+        $(document).on("click",".chkRoute",function(e) {
+            
+            // $('#carousel').html('');
+            // $(".carousel-container").hide();
+            
+            var $this = $(this);
+            var rtId = $this.siblings('.rtId').val();
+            //let imagePath = $("#image_" + rtId).val();
+            //if( $this.find(':checkbox').prop('checked') ) {
+            if( $('#way_' + rtId).prop('checked') ) {
+                
+                //imageArray.push(imagePath);
+                $this.css('background-position','0px -16px');
+                $this.find(':checkbox').prop('checked',true);
+                existPath[pathsCnt]  = new Array();
+                
+                var origin = $this.siblings('.rtOrig').val();
+                var des   = $this.siblings('.rtDest').val();
+                var wp   = $this.siblings('.rtWp').val();
+                var color = getRandomColor();
+                var rander = {
+                    draggable :false,
+                    polylineOptions:{strokeColor:color}
+                };
+                if( wp == "" ) {
+                    existPath[pathsCnt][0] = showRoute(origin,des,rander);
+                } else {
+                    existPath[pathsCnt][0] = setroute(wp,rander);
+                }
+                existPath[pathsCnt][1] = $this.siblings('.rtId').val();
+                pathsCnt++;
 
-       //                  alert("here");
+            } else {
 
-       //               }
-       //  // Check input( $( this ).val() ) for validity here
-       //  });
+                //remove(imageArray, imagePath);
 
+                $this.css('background-position','0px 0px');
+                $this.find(':checkbox').prop('checked',false);
 
+                let current_id = $this.siblings('.rtId').val();
+                let lastcount = 1;
+                let len = existPath.length;
+                let existPathLastKeyNumber = '';
+                for (var k in existPath){
+                    if (typeof existPath[k] !== 'function') {
+                         if(current_id == existPath[k][1]) {
+                            existPath.splice([k], 1);
+                         }
+                    }
+                    lastcount++;
+                    if(lastcount == len) {
+                        existPathLastKeyNumber = k;
+                    }
+                }
 
-        // $('.chkRoute').unbind('click').bind('click',function(){
+                let pathLength = existPath.length;
+                var color = getRandomColor();
+                var rander = {
+                    draggable :false,
+                    polylineOptions:{strokeColor:color}
+                };
 
-        //     var $this = $(this);
-        //     if( $this.find(':checkbox').prop('checked') )
-        //     {
-        //         $this.css('background-position','0px 0px');
-        //         $this.find(':checkbox').prop('checked',false);
-        //         $(existPath).each(function(i,obj){
-        //             if (obj[1] == $this.siblings('.rtId').val())
-        //             {
-        //                 obj[0].setMap(null);
-        //                 $(obj).splice(i , 1);
-        //                 pathsCnt--;
-        //             }
-        //         });
-        //     }
-        //     else
-        //     {
-        //         $this.css('background-position','0px -16px');
-        //         $this.find(':checkbox').prop('checked',true);
-        //         existPath[pathsCnt]  = new Array();
-        //         var origin = $this.siblings('.rtOrig').val();
-        //         var des   = $this.siblings('.rtDest').val();
-        //         var wp   = $this.siblings('.rtWp').val();
-        //         var color = getRandomColor();
-        //         var rander = {
-        //             draggable :false,
-        //             polylineOptions:{strokeColor:color}
-        //         };
-        //         if( wp == "" )
-        //         {
-        //             existPath[pathsCnt][0] = showRoute(origin,des,rander);
-        //         }
-        //         else
-        //         {
-        //             existPath[pathsCnt][0] = setroute(wp,rander);
-        //         }
-        //         existPath[pathsCnt][1] = $this.siblings('.rtId').val();
-        //         pathsCnt++;
-        //     }
-        // });
+                if (pathLength == 0) {
+                    existPath = [];
+                    pathsCnt = 0;
+                    $(".city").trigger("change");
+                } else {
+                    let last_id = existPath[existPathLastKeyNumber][1];
+                    let wp = $('#rtWp_' + last_id).val();
+                    setroute(wp,rander);
+                }
+            }
+
+            // if(imageArray.length !== 0) {
+            //     let content  = '';
+            //     $.each( imageArray, function( key, value ) {
+            //         $('<div class="carousel-feature"><a><img class="carousel-image" alt="Image Caption" src="'+value+'" id="slider_image_'+rtId+'"></a></div>').appendTo('#carousel');
+            //     });
+            //     $("#carousel").featureCarousel();
+            //     $(".carousel-container").show();
+                
+            // } else {
+            //     $(".carousel-container").hide();
+            // }
+        });
 
         // Javascript method's body can be found in assets/js/demos.js
         demo.initDashboardPageCharts();
 
         demo.initVectorMap();
+
+        $('#slider_remove_btn').click(function(){
+            $('#carousel').html('');
+            $(".carousel-container").hide();
+            $("#slider_remove_btn").hide();
+        });
+        
     });
+
+    function routeFun(id) {
+        $('#carousel').html('');
+        $(".carousel-container").hide();
+        $("#slider_remove_btn").hide();
+        let getAllImages = $("#image_" + id).val();
+        let slider_images;
+        if(getAllImages !== '') {
+            slider_images = getAllImages.split(",");
+            let content  = '';
+            slider_images.forEach(function(element) {
+                $('<div class="carousel-feature"><a href="'+element+'" ><img  class="carousel-image" alt="Image Caption" src="'+element+'"></a></div>').appendTo('#carousel');
+            });
+
+
+            //$("#carousel").featureCarousel();
+             $("#carousel").featureCarousel({
+                largeFeatureWidth: 400,     // width of image in center
+                largeFeatureHeight: 175,    // height of image in center
+                smallFeatureWidth: .42,     // width of the other images (42% of original width)
+                smallFeatureHeight: .35,     // height of the other images (35% of original height)
+                lightbox: 'image'    
+                    // movedToCenter: function($feature) {
+                    //   // $feature is a jQuery wrapped object describing the featured that is now in the center position.
+                    //   var imageUrl = $feature.find('.carousel').attr('href');
+                    //   alert('A new feature has moved to the center. The HREF of the image is: ' + imageUrl);
+                    // }
+                  });
+
+           
+
+            $(".carousel-container").show();
+            $("#slider_remove_btn").show();
+        } else {
+            $('#carousel').html('');
+            $(".carousel-container").hide();
+            $("#slider_remove_btn").hide();
+        }
+    }
 </script>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        // $('#datatables').DataTable({
-        //     "pagingType": "full_numbers",
-        //     "lengthMenu": [
-        //         [10, 25, 50, -1],
-        //         [10, 25, 50, "All"]
-        //     ],
-        //     responsive: true,
-        //     language: {
-        //         search: "_INPUT_",
-        //         searchPlaceholder: "Search records",
-        //     }
-
-        // });
+<style type="text/css">
+    .cursor_pointer {
+        cursor: pointer;
+    }
+</style>
 
 
-        // var table = $('#datatables').DataTable();
-
-        // // Edit record
-        // table.on('click', '.edit', function() {
-        //     $tr = $(this).closest('tr');
-
-        //     var data = table.row($tr).data();
-        //     alert('You press on Row: ' + data[0] + ' ' + data[1] + ' ' + data[2] + '\'s row.');
-        // });
-
-        // // Delete a record
-        // table.on('click', '.remove', function(e) {
-        //     $tr = $(this).closest('tr');
-        //     table.row($tr).remove().draw();
-        //     e.preventDefault();
-        // });
-
-        // //Like record
-        // table.on('click', '.like', function() {
-        //     alert('You clicked on Like button');
-        // });
-
-        //$('.card .material-datatables label').addClass('form-group');
-    });
-</script>
 </html>
