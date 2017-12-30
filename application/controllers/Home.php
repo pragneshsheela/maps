@@ -25,7 +25,29 @@ class Home extends CI_Controller {
         $data['username']=$username;
 		$this->template->load('admin','home/index',$data);
 	}
+
+	public function search() {
+		$json = [];
+		$this->load->database();
+		if(!empty($this->input->get("q"))){
+			$this->db->like('city_name', $this->input->get("q"));
+			$query = $this->db->select('city_id as id, city_name as text')
+						->limit(10)
+						->get("cities");
+			$json = $query->result();
+
+
+			// $this->db->select('user_id, user_telephone, user_email, CONCAT(user_firstname, '.', user_surname) AS name', FALSE);
+			// $this->db->from('users');
+			// $this->db->where('name', $term);
+
+		}
+		echo json_encode($json);
+
+	}
+
 	public function getroutes() {
+
 		$output = null; 	
 		$id_ccity = $this->input->post('id',TRUE);
 		$data['routes'] = $this->mapshome_model->get_routes($id_ccity);
@@ -35,15 +57,7 @@ class Home extends CI_Controller {
 		$cnt = 0;
 		$len = count($data['routes']);
 		foreach ($data['routes'] as $row) {
-		 		// $output .= "<li><div  class='chkRoute'><input onclick='loadwaypointmap();'  class='chkRoute' id="."way".$cnt." name='waypoints[]' type='checkbox' >".$row['route_name']."<input type='hidden' class='rtId' value='1416100'>
-	    //             <input type='hidden' class='rtOrig' value=''>
-	    //             <input type='hidden' class='rtDest' value=''>
-	    //             <input type='hidden' class='rtOlat' value='21.216165'>
-	    //             <input type='hidden' class='rtOlng' value='72.839844'>
-	    //             <input type='hidden' class='rtDlat' value='21.21616'>
-	    //             <input type='hidden' class='rtDlng' value='72.839844'>
-					// <input type='hidden' id='rtWp' value='{&quot;start&quot;:{&quot;lat&quot;:21.216165,&quot;lng&quot;:72.839844},&quot;end&quot;:{&quot;lat&quot;:21.216165,&quot;lng&quot;:72.839844},&quot;waypoints&quot;:[[21.385982,73.764817],[21.542767,73.799422]]}'></div></li>";
-			$route_id = $row['route_id'];
+		 	$route_id = $row['route_id'];
 			if(!isset($route[$route_id])) {
 				$route[$route_id] = [];
 				$route[$route_id]['latitude'] = $row['route_latitude'];
@@ -85,7 +99,7 @@ class Home extends CI_Controller {
 						}
 						$slider_image .= implode(",", $value['image']);
 						
-						$output .= "<li><div><input onclick='loadwaypointmap(".$key.");'  class='chkRoute' id="."way_".$key." name='waypoints[]' type='checkbox' ><span onclick='routeFun(".$key.");' class='cursor_pointer'>".$row['route_name']."</span><input type='hidden' class='rtId' value='".$key."'>
+						$output .= "<li><div><input class='chkRoute' id="."way_".$key." name='waypoints[]' type='checkbox' ><span onclick='routeFun(".$key.");' class='cursor_pointer'>".$row['route_name']."</span><input type='hidden' class='rtId' value='".$key."'>
 		                <input type='hidden' class='rtOrig' value=''>
 		                <input type='hidden' class='rtDest' value=''>
 		                <input type='hidden' class='rtOlat' value='".$value['latitude']."'>
