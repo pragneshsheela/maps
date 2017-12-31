@@ -96,6 +96,10 @@
                         </div>
                     </div>
                 </div>
+
+                
+
+
                 <ul class="nav">
 
                     <li>
@@ -105,10 +109,18 @@
                                 <div class="form-group">
                                     
                                     <select 
-                                        class="city selectbox form-control required" 
-                                        id="postcode" 
-                                        name="postcode">
-                                        
+                                        data-placeholder="Choose a City..." 
+                                        class="city chz-select" 
+                                        style="width:260px;"
+                                        tabindex="2">
+                                          <option value=""></option> 
+                                          <?php
+                                            foreach ($cities as $row){
+                                            ?>
+                                                <option value="<?php echo $row['city_id']."-".$row['city_name']; ?>"> <?php echo $row['city_name'] ?> </option>
+                                            <?php
+                                            }
+                                          ?>
                                     </select>
                                     <span class="material-input"></span>
                                 </div>
@@ -116,27 +128,25 @@
                         </div>
                     </li>
 
-                        <?php
-                            // $options_cities = array('' => "Select");
-                            // foreach ($cities as $row){
-                            //     $options_cities[$row['city_id']."-".$row['city_name']] = $row['city_name'];
-                            // }
+                    <li style="position: initial !important; ">
+                        <div class="control-group">
+                            <label class="control-label">Route Search</label>
+                            <div class="dropdown-container">
+                                <div class="dropdown-button noselect">
+                                    <div class="dropdown-label">Routes</div>
+                                    <div class="dropdown-quantity">(<span class="quantity">Any</span>)</div>
+                                    <i class="fa fa-filter"></i>
+                                </div>
+                                <div class="dropdown-list" style="display: none;">
+                                    <input type="search" placeholder="Search states" class="dropdown-search"/>
+                                    <ul></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
 
-                        ?>
-                        <?php
-                      // echo '<li class="active"><div class="control-group">';
-                      //   echo '<label for="city_id" for="inputError" class="control-label">City Name</label>';
-                      //   echo '<div  class="controls">';
-                          
-                          
-                      //     echo form_dropdown('city_id', $options_cities, set_value('city_id'),'class="city span2 form-control select2-allow-clear"', 'id="single-append-text"','placeholder="Select Customer Name"' );
-
-                      //   echo '</div>';
-                      // echo '</div>';
-                      // echo '<input type="hidden" id="select2-name" name="date" value="Select City Name"  ></li>';
-                        ?>
-                        <li class="route" >Route Name</li>
-                        <li>
+                    <!-- <li class="route" >Route Name</li>
+                    <li>
                         <a data-toggle="collapse" href="#componentsExamples">
                             
                             <p>Route Name
@@ -148,9 +158,7 @@
                                 
                             </ul>
                         </div>
-
-                        
-                </li>   
+                    </li>    -->
 
                   
                     
@@ -212,6 +220,7 @@
 <script src="assets/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="assets/js/material.min.js" type="text/javascript"></script>
 <script src="assets/js/perfect-scrollbar.jquery.min.js" type="text/javascript"></script>
+
 <!-- Forms Validations Plugin -->
 <script src="assets/js/jquery.validate.min.js"></script>
 <!--  Plugin for Date Time Picker and Full Calendar Plugin-->
@@ -249,8 +258,10 @@
 
 <script src="assets/featurecarousel/js/jquery.featureCarousel.js" type="text/javascript" charset="utf-8"></script>
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<link rel="stylesheet" href="assets/css/chosen.css"/>
+<script src="assets/js/custom/chosen.jquery.js"></script>
+
+
 
 <script type="text/javascript">
 
@@ -264,35 +275,38 @@
 
     $(".city").on("change keyup", function() {
 
-        var dataTemp = $('#postcode').select2('data');
+      $(".dropdown-list").hide();
+      $('.dropdown-list ul').html('');
 
-        let cityid = dataTemp[0].id;
-        let cityname = dataTemp[0].text;
-
-          $.getJSON("https://maps.googleapis.com/maps/api/geocode/json?address="+cityname, function(val) {
+      let city = $(this).val()
+      let res = city.split("-");
+      let cityid = res[0];
+      let cityname = res[1];
+        $.getJSON("https://maps.googleapis.com/maps/api/geocode/json?address="+cityname, function(val) {
             if(val.results.length) {
-              var location = val.results[0].geometry.location
-              var citylat = location.lat;
-              var citylng =  location.lng;              
-              var mapOptions = {
-                              center: new google.maps.LatLng(citylat, citylng),
-                              zoom: 10,
-                              mapTypeControl: true
-                            };  
+                let location = val.results[0].geometry.location
+                let citylat = location.lat;
+                let citylng =  location.lng;              
+                let mapOptions = {
+                    center: new google.maps.LatLng(citylat, citylng),
+                    zoom: 10,
+                    mapTypeControl: true
+                };  
                 map = new google.maps.Map(document.getElementById('map'), mapOptions);
-                 $.ajax({  
-                        url:"/maps/home/getroutes",
-                        data: "id="+cityid,                        
-                        type: "POST",
-                        dataType: "html",
-                        success:function(data){  
+                $.ajax({
+                    url:"/maps/home/getroutes",
+                    data: "id="+cityid,
+                    type: "POST",
+                    dataType: "html",
+                    success:function(data){  
                         $("#route").html('');  
-                        $("#route").append(data);  
-                     }  
-                  }); 
-                 
+                        $("#route").append(data);
+                        $('.dropdown-list ul').append(data);
+                        $(".dropdown-list").show();
+                    }  
+                }); 
             }
-          })
+        })
     })
 
     function loadcitymap(){
@@ -371,7 +385,6 @@
         return color;
     } 
 
-
     function remove(array, element) {
         const index = array.indexOf(element);
         array.splice(index, 1);
@@ -387,7 +400,21 @@
         }
         
     // 16 Standard Colours for navigation polylines
-        var colourArray = ['maroon','lime', 'navy', 'grey', 'fuchsia', 'black', 'white', 'purple', 'aqua', 'red', 'green', 'silver', 'olive', 'blue', 'yellow', 'teal'];
+        var colourArray = ['red','green', 'blue', 'orange', 'purple', 'pink', 'yellow'];
+
+
+        let iconURLPrefix = 'http://maps.google.com/mapfiles/ms/icons/';
+        let icons = [
+          iconURLPrefix + 'red-dot.png',
+          iconURLPrefix + 'green-dot.png',
+          iconURLPrefix + 'blue-dot.png',
+          iconURLPrefix + 'orange-dot.png',
+          iconURLPrefix + 'purple-dot.png',
+          iconURLPrefix + 'pink-dot.png',      
+          iconURLPrefix + 'yellow-dot.png'
+        ];
+
+
        
         $(document).on("click",".chkRoute",function(e) {
             
@@ -405,10 +432,15 @@
                 var origin = $this.siblings('.rtOrig').val();
                 var des   = $this.siblings('.rtDest').val();
                 var wp   = $this.siblings('.rtWp').val();
-                var color = getRandomColor();
+                //var color = getRandomColor();
+                let number = (Math.floor(Math.random() * (6 - 0 + 1)) + 0);
+                let color = colourArray[number];
+                let dynamicMarkerColor = icons[number];
+                console.log(dynamicMarkerColor);
                 var rander = {
                     draggable :false,
-                    polylineOptions:{strokeColor:color}
+                    polylineOptions:{strokeColor:color},
+                    markerOptions: { icon: dynamicMarkerColor},
                 };
                 if( wp == "" ) {
                     existPath[pathsCnt][0] = showRoute(origin,des,rander);
@@ -440,10 +472,15 @@
                 }
 
                 let pathLength = existPath.length;
-                var color = getRandomColor();
+                //var color = getRandomColor();
+                let number = (Math.floor(Math.random() * (6 - 0 + 1)) + 0);
+                let color = colourArray[number];
+                let dynamicMarkerColor = icons[number];
+                console.log(dynamicMarkerColor);
                 var rander = {
                     draggable :false,
-                    polylineOptions:{strokeColor:color}
+                    polylineOptions:{strokeColor:color},
+                    markerOptions: { icon: dynamicMarkerColor},
                 };
 
                 if (pathLength == 0) {
@@ -513,28 +550,203 @@
     }
 </script>
 
-<script type="text/javascript">
-     $('#postcode').select2({
-        placeholder: '--- Select Item ---',
-        ajax: {
-          url: '<?php echo base_url(); ?>/home/search',
-          dataType: 'json',
-          delay: 250,
-          processResults: function (data) {
-            return {
-              results: data
-            };
-          },
-          cache: true
-        }
-    });
-</script>
-
 <style type="text/css">
     .cursor_pointer {
         cursor: pointer;
     }
 </style>
 
+<script type="text/javascript">
+   $(document).ready(function(){
+        $("select").chosen({allow_single_deselect:true});
 
+
+    $('.dropdown-container')
+    .on('click', '.dropdown-button', function() {
+        $('.dropdown-list').toggle();
+    })
+    .on('input', '.dropdown-search', function() {
+        var target = $(this);
+        var search = target.val().toLowerCase();
+    
+        if (!search) {
+            $('li').show();
+            return false;
+        }
+    
+        $('li').each(function() {
+            var text = $(this).text().toLowerCase();
+            var match = text.indexOf(search) > -1;
+            $(this).toggle(match);
+        });
+    })
+    .on('change', '[type="checkbox"]', function() {
+        var numChecked = $('[type="checkbox"]:checked').length;
+        $('.quantity').text(numChecked || 'Any');
+    });
+
+// JSON of States for demo purposes
+var usStates = [
+    { name: 'ALABAMA', abbreviation: 'AL'},
+    { name: 'ALASKA', abbreviation: 'AK'},
+    { name: 'AMERICAN SAMOA', abbreviation: 'AS'},
+    { name: 'ARIZONA', abbreviation: 'AZ'},
+    { name: 'ARKANSAS', abbreviation: 'AR'},
+    { name: 'CALIFORNIA', abbreviation: 'CA'},
+    { name: 'COLORADO', abbreviation: 'CO'},
+    { name: 'CONNECTICUT', abbreviation: 'CT'},
+    { name: 'DELAWARE', abbreviation: 'DE'},
+    { name: 'DISTRICT OF COLUMBIA', abbreviation: 'DC'},
+    { name: 'FEDERATED STATES OF MICRONESIA', abbreviation: 'FM'},
+    { name: 'FLORIDA', abbreviation: 'FL'},
+    { name: 'GEORGIA', abbreviation: 'GA'},
+    { name: 'GUAM', abbreviation: 'GU'},
+    { name: 'HAWAII', abbreviation: 'HI'},
+    { name: 'IDAHO', abbreviation: 'ID'},
+    { name: 'ILLINOIS', abbreviation: 'IL'},
+    { name: 'INDIANA', abbreviation: 'IN'},
+    { name: 'IOWA', abbreviation: 'IA'},
+    { name: 'KANSAS', abbreviation: 'KS'},
+    { name: 'KENTUCKY', abbreviation: 'KY'},
+    { name: 'LOUISIANA', abbreviation: 'LA'},
+    { name: 'MAINE', abbreviation: 'ME'},
+    { name: 'MARSHALL ISLANDS', abbreviation: 'MH'},
+    { name: 'MARYLAND', abbreviation: 'MD'},
+    { name: 'MASSACHUSETTS', abbreviation: 'MA'},
+    { name: 'MICHIGAN', abbreviation: 'MI'},
+    { name: 'MINNESOTA', abbreviation: 'MN'},
+    { name: 'MISSISSIPPI', abbreviation: 'MS'},
+    { name: 'MISSOURI', abbreviation: 'MO'},
+    { name: 'MONTANA', abbreviation: 'MT'},
+    { name: 'NEBRASKA', abbreviation: 'NE'},
+    { name: 'NEVADA', abbreviation: 'NV'},
+    { name: 'NEW HAMPSHIRE', abbreviation: 'NH'},
+    { name: 'NEW JERSEY', abbreviation: 'NJ'},
+    { name: 'NEW MEXICO', abbreviation: 'NM'},
+    { name: 'NEW YORK', abbreviation: 'NY'},
+    { name: 'NORTH CAROLINA', abbreviation: 'NC'},
+    { name: 'NORTH DAKOTA', abbreviation: 'ND'},
+    { name: 'NORTHERN MARIANA ISLANDS', abbreviation: 'MP'},
+    { name: 'OHIO', abbreviation: 'OH'},
+    { name: 'OKLAHOMA', abbreviation: 'OK'},
+    { name: 'OREGON', abbreviation: 'OR'},
+    { name: 'PALAU', abbreviation: 'PW'},
+    { name: 'PENNSYLVANIA', abbreviation: 'PA'},
+    { name: 'PUERTO RICO', abbreviation: 'PR'},
+    { name: 'RHODE ISLAND', abbreviation: 'RI'},
+    { name: 'SOUTH CAROLINA', abbreviation: 'SC'},
+    { name: 'SOUTH DAKOTA', abbreviation: 'SD'},
+    { name: 'TENNESSEE', abbreviation: 'TN'},
+    { name: 'TEXAS', abbreviation: 'TX'},
+    { name: 'UTAH', abbreviation: 'UT'},
+    { name: 'VERMONT', abbreviation: 'VT'},
+    { name: 'VIRGIN ISLANDS', abbreviation: 'VI'},
+    { name: 'VIRGINIA', abbreviation: 'VA'},
+    { name: 'WASHINGTON', abbreviation: 'WA'},
+    { name: 'WEST VIRGINIA', abbreviation: 'WV'},
+    { name: 'WISCONSIN', abbreviation: 'WI'},
+    { name: 'WYOMING', abbreviation: 'WY' }
+];
+
+// <li> template
+// var stateTemplate = _.template(
+//     '<li>' +
+//         '<input name="<%= abbreviation %>" type="checkbox">' +
+//         '<label for="<%= abbreviation %>"><%= capName %></label>' +
+//     '</li>'
+// );
+
+// Populate list with states
+// _.each(usStates, function(s) {
+//     s.capName = _.startCase(s.name.toLowerCase());
+//     $('ul').append(stateTemplate(s));
+// });
+    
+    var stateTemplate = 
+        '<li>' +
+            '<input name="<%= abbreviation %>" type="checkbox">' +
+            '<label for="<%= abbreviation %>"><%= capName %></label>' +
+        '</li>';
+
+    usStates.forEach(function(element) {
+        element.capName = element.name.toLowerCase();
+        //$('.dropdown-list ul').append("<li><input name='"+ element.abbreviation  +"' type='checkbox'></li>");
+    });
+   });
+</script>
+
+<style type="text/css">
+    
+
+    .noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.dropdown-container, .instructions {
+    width: 200px;
+    margin: 20px auto 0;
+    font-size: 14px;
+    font-family: sans-serif;
+}
+
+.instructions {
+    width: 100%;
+    text-align: center;
+}
+
+.dropdown-button {
+    float: left;
+    width: 100%;
+    background: whitesmoke;
+    padding: 10px 12px;
+
+    cursor: pointer;
+    border: 1px solid lightgray;
+    box-sizing: border-box;
+    
+    .dropdown-label, .dropdown-quantity {
+        float: left;
+    }
+    
+    .dropdown-quantity {
+        margin-left: 4px;
+    }
+    
+    .fa-filter {
+        float: right;
+    }
+}
+
+.dropdown-list {
+    float: left;
+    width: 100%;
+
+    border: 1px solid lightgray;
+    border-top: none;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    
+    input[type="search"] {
+        padding: 5px 0;
+    }
+    
+    ul {
+        margin: 10px 0;
+        max-height: 200px;
+        overflow-y: auto;
+        
+        input[type="checkbox"] {
+            position: relative;
+            top: 2px;
+        }
+    }
+}
+
+
+</style>
 </html>
