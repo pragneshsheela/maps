@@ -139,7 +139,7 @@
                                 </div>
                                 <div class="dropdown-list" style="display: none;">
                                     <input type="search" placeholder="Search states" class="dropdown-search"/>
-                                    <ul></ul>
+                                    <ul style="height: 200px; overflow: auto; list-style-type: none; margin-left: -30px;"></ul>
                                 </div>
                             </div>
                         </div>
@@ -563,18 +563,20 @@
 
     $('.dropdown-container')
     .on('click', '.dropdown-button', function() {
+        
         $('.dropdown-list').toggle();
     })
     .on('input', '.dropdown-search', function() {
+
         var target = $(this);
         var search = target.val().toLowerCase();
     
         if (!search) {
-            $('li').show();
+            $('.dropdown-list li').show();
             return false;
         }
     
-        $('li').each(function() {
+        $('.dropdown-list li').each(function() {
             var text = $(this).text().toLowerCase();
             var match = text.indexOf(search) > -1;
             $(this).toggle(match);
