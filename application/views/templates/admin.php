@@ -97,9 +97,6 @@
                     </div>
                 </div>
 
-                
-
-
                 <ul class="nav">
 
                     <li>
@@ -144,25 +141,6 @@
                             </div>
                         </div>
                     </li>
-
-                    <!-- <li class="route" >Route Name</li>
-                    <li>
-                        <a data-toggle="collapse" href="#componentsExamples">
-                            
-                            <p>Route Name
-                                <b class="caret"></b>
-                            </p>
-                        </a>
-                        <div class="collapse" id="componentsExamples">
-                            <ul id="route" class="nav ">
-                                
-                            </ul>
-                        </div>
-                    </li>    -->
-
-                  
-                    
-                    
                 </ul>
             </div>
         </div>
@@ -214,6 +192,7 @@
         </div>
     </div>
 </body>
+
 <!--   Core JS Files   -->
 <script src="assets/js/jquery-3.1.1.min.js" type="text/javascript"></script>
 <script src="assets/js/jquery-ui.min.js" type="text/javascript"></script>
@@ -262,16 +241,11 @@
 <script src="assets/js/custom/chosen.jquery.js"></script>
 
 
-
 <script type="text/javascript">
 
-  var imageArray = new Array();
-  $(".carousel-container").hide();
-  $("#slider_remove_btn").hide();
-</script>
-
-
-<script type="text/javascript">
+    var imageArray = new Array();
+    $(".carousel-container").hide();
+    $("#slider_remove_btn").hide();
 
     $(".city").on("change keyup", function() {
 
@@ -369,6 +343,8 @@
         return obj;
     }
 
+    var myMarkers = []; 
+
     var existPath = new Array();    
     var directionsService = new google.maps.DirectionsService();
     var num, map, data;
@@ -389,17 +365,15 @@
         const index = array.indexOf(element);
         array.splice(index, 1);
     }
-</script>        
-
-<script type="text/javascript">
 
     $(document).ready(function() {
+
         var jsonArray = {
             "Person 1": ["Surat","UDHNA","Navsari"],
             "Person 2": ["ADAJAN","DAMKA","HAZIRA"]
         }
         
-    // 16 Standard Colours for navigation polylines
+        // 16 Standard Colours for navigation polylines
         var colourArray = ['red','green', 'blue', 'orange', 'purple', 'pink', 'yellow'];
 
 
@@ -436,7 +410,7 @@
                 let number = (Math.floor(Math.random() * (6 - 0 + 1)) + 0);
                 let color = colourArray[number];
                 let dynamicMarkerColor = icons[number];
-                console.log(dynamicMarkerColor);
+                
                 var rander = {
                     draggable :false,
                     polylineOptions:{strokeColor:color},
@@ -476,7 +450,7 @@
                 let number = (Math.floor(Math.random() * (6 - 0 + 1)) + 0);
                 let color = colourArray[number];
                 let dynamicMarkerColor = icons[number];
-                console.log(dynamicMarkerColor);
+                
                 var rander = {
                     draggable :false,
                     polylineOptions:{strokeColor:color},
@@ -495,6 +469,7 @@
             }
 
             
+
         });
 
         // Javascript method's body can be found in assets/js/demos.js
@@ -511,16 +486,28 @@
     });
 
     function routeFun(id) {
+
         $('#carousel').html('');
         $(".carousel-container").hide();
         $("#slider_remove_btn").hide();
+
+        let routeWp = $("#rtWp_" + id).val();
+        var routePoi = JSON.parse(routeWp);
+        let poi_wayPoint_lists = routePoi.waypoints;
+        let poi_wayPoint;
+        
         let getAllImages = $("#image_" + id).val();
         let slider_images;
+        
         if(getAllImages !== '') {
+            
             slider_images = getAllImages.split(",");
             let content  = '';
+            let cnt = 0;
             slider_images.forEach(function(element) {
-                $('<div class="carousel-feature"><a href="'+element+'" ><img  class="carousel-image" alt="Image Caption" src="'+element+'"></a></div>').appendTo('#carousel');
+                
+                $('<div class="carousel-feature"><a href="'+element+'" ><img  class="carousel-image" alt="'+id+'###'+poi_wayPoint_lists[cnt][0]+'###'+poi_wayPoint_lists[cnt][1]+'" src="'+element+'"></a></div>').appendTo('#carousel');
+                cnt++;
             });
 
 
@@ -530,12 +517,79 @@
                 largeFeatureHeight: 175,    // height of image in center
                 smallFeatureWidth: .42,     // width of the other images (42% of original width)
                 smallFeatureHeight: .35,     // height of the other images (35% of original height)
-                lightbox: 'image'    
-                    // movedToCenter: function($feature) {
-                    //   // $feature is a jQuery wrapped object describing the featured that is now in the center position.
-                    //   var imageUrl = $feature.find('.carousel').attr('href');
-                    //   alert('A new feature has moved to the center. The HREF of the image is: ' + imageUrl);
-                    // }
+                lightbox: 'image',
+                    movedToCenter: function($feature) {
+
+                        var imagePath = $feature.find('.carousel-image').attr('src');
+                        var imageData = $feature.find('.carousel-image').attr('alt');
+                        let imageDetails = imageData.split("###");
+                        let routeID = imageDetails[0];
+                        let poi_lat = imageDetails[1];
+                        let poi_long = imageDetails[2];
+
+                        for (var i in existPath) {
+
+                          if(existPath[i][1] == routeID) {
+
+                            if(myMarkers[0]) {
+                                myMarkers[0][0].setMap(null);
+                            }
+                            
+                            myMarkers = [];
+                            myMarkers[0] = [];
+
+                            //existPath[i][0] = new Array();
+
+                            let dynamicMarkerColor = imagePath;
+
+                            var icon = {
+                                url: dynamicMarkerColor, // url
+                                scaledSize: new google.maps.Size(60, 60), // scaled size
+                            }
+
+                            
+
+                            var contentString = "<span style='font-size:11px;'><img width='150' src=" + imagePath + "></span>";
+
+                            var infowindow = new google.maps.InfoWindow({
+                                content: contentString
+                            });
+
+
+                            var tmpMarker = new google.maps.Marker({
+                                position: new google.maps.LatLng(poi_lat, poi_long),
+                                map: map,
+                                icon : icon,
+                                animation: google.maps.Animation.DROP
+                            });
+
+
+                            tmpMarker.addListener('click', function() {
+                                infowindow.open(map, tmpMarker);
+                            });
+
+                            myMarkers[0].push(tmpMarker);
+
+                            // existPath[i][0] = tmpMarker;                
+                            // existPath[i][1] = routeID;
+
+                            
+                            // existInfoWindow = new google.maps.InfoWindow({
+                            //     content: "<span style='font-size:11px;'><img width='150' src=" + imagePath + "></span>"
+                            // });
+
+                            //existInfoWindow.open(map,tmpMarker);
+                            // google.maps.event.addListener(tmpMarker, 'click', markerInCallback(existInfoWindow, tmpMarker));
+                            // google.maps.event.addListener(tmpMarker, 'mouseover', markerInCallback(existInfoWindow, tmpMarker));
+                            // google.maps.event.addListener(tmpMarker, 'mouseout', markerOutCallback(existInfoWindow));
+
+                          }
+                        }
+
+
+
+
+                    }
                   });
 
            
@@ -548,207 +602,114 @@
             $("#slider_remove_btn").hide();
         }
     }
+
+    $(document).ready(function(){
+        $("select").chosen({allow_single_deselect:true});
+
+        $('.dropdown-container')
+        .on('click', '.dropdown-button', function() {
+            
+            $('.dropdown-list').toggle();
+        })
+        .on('input', '.dropdown-search', function() {
+
+            var target = $(this);
+            var search = target.val().toLowerCase();
+        
+            if (!search) {
+                $('.dropdown-list li').show();
+                return false;
+            }
+        
+            $('.dropdown-list li').each(function() {
+                var text = $(this).text().toLowerCase();
+                var match = text.indexOf(search) > -1;
+                $(this).toggle(match);
+            });
+        })
+        .on('change', '[type="checkbox"]', function() {
+            var numChecked = $('[type="checkbox"]:checked').length;
+            $('.quantity').text(numChecked || 'Any');
+        });
+
+    });
+
 </script>
 
 <style type="text/css">
+    
     .cursor_pointer {
         cursor: pointer;
     }
-</style>
-
-<script type="text/javascript">
-   $(document).ready(function(){
-        $("select").chosen({allow_single_deselect:true});
-
-
-    $('.dropdown-container')
-    .on('click', '.dropdown-button', function() {
-        
-        $('.dropdown-list').toggle();
-    })
-    .on('input', '.dropdown-search', function() {
-
-        var target = $(this);
-        var search = target.val().toLowerCase();
-    
-        if (!search) {
-            $('.dropdown-list li').show();
-            return false;
-        }
-    
-        $('.dropdown-list li').each(function() {
-            var text = $(this).text().toLowerCase();
-            var match = text.indexOf(search) > -1;
-            $(this).toggle(match);
-        });
-    })
-    .on('change', '[type="checkbox"]', function() {
-        var numChecked = $('[type="checkbox"]:checked').length;
-        $('.quantity').text(numChecked || 'Any');
-    });
-
-// JSON of States for demo purposes
-var usStates = [
-    { name: 'ALABAMA', abbreviation: 'AL'},
-    { name: 'ALASKA', abbreviation: 'AK'},
-    { name: 'AMERICAN SAMOA', abbreviation: 'AS'},
-    { name: 'ARIZONA', abbreviation: 'AZ'},
-    { name: 'ARKANSAS', abbreviation: 'AR'},
-    { name: 'CALIFORNIA', abbreviation: 'CA'},
-    { name: 'COLORADO', abbreviation: 'CO'},
-    { name: 'CONNECTICUT', abbreviation: 'CT'},
-    { name: 'DELAWARE', abbreviation: 'DE'},
-    { name: 'DISTRICT OF COLUMBIA', abbreviation: 'DC'},
-    { name: 'FEDERATED STATES OF MICRONESIA', abbreviation: 'FM'},
-    { name: 'FLORIDA', abbreviation: 'FL'},
-    { name: 'GEORGIA', abbreviation: 'GA'},
-    { name: 'GUAM', abbreviation: 'GU'},
-    { name: 'HAWAII', abbreviation: 'HI'},
-    { name: 'IDAHO', abbreviation: 'ID'},
-    { name: 'ILLINOIS', abbreviation: 'IL'},
-    { name: 'INDIANA', abbreviation: 'IN'},
-    { name: 'IOWA', abbreviation: 'IA'},
-    { name: 'KANSAS', abbreviation: 'KS'},
-    { name: 'KENTUCKY', abbreviation: 'KY'},
-    { name: 'LOUISIANA', abbreviation: 'LA'},
-    { name: 'MAINE', abbreviation: 'ME'},
-    { name: 'MARSHALL ISLANDS', abbreviation: 'MH'},
-    { name: 'MARYLAND', abbreviation: 'MD'},
-    { name: 'MASSACHUSETTS', abbreviation: 'MA'},
-    { name: 'MICHIGAN', abbreviation: 'MI'},
-    { name: 'MINNESOTA', abbreviation: 'MN'},
-    { name: 'MISSISSIPPI', abbreviation: 'MS'},
-    { name: 'MISSOURI', abbreviation: 'MO'},
-    { name: 'MONTANA', abbreviation: 'MT'},
-    { name: 'NEBRASKA', abbreviation: 'NE'},
-    { name: 'NEVADA', abbreviation: 'NV'},
-    { name: 'NEW HAMPSHIRE', abbreviation: 'NH'},
-    { name: 'NEW JERSEY', abbreviation: 'NJ'},
-    { name: 'NEW MEXICO', abbreviation: 'NM'},
-    { name: 'NEW YORK', abbreviation: 'NY'},
-    { name: 'NORTH CAROLINA', abbreviation: 'NC'},
-    { name: 'NORTH DAKOTA', abbreviation: 'ND'},
-    { name: 'NORTHERN MARIANA ISLANDS', abbreviation: 'MP'},
-    { name: 'OHIO', abbreviation: 'OH'},
-    { name: 'OKLAHOMA', abbreviation: 'OK'},
-    { name: 'OREGON', abbreviation: 'OR'},
-    { name: 'PALAU', abbreviation: 'PW'},
-    { name: 'PENNSYLVANIA', abbreviation: 'PA'},
-    { name: 'PUERTO RICO', abbreviation: 'PR'},
-    { name: 'RHODE ISLAND', abbreviation: 'RI'},
-    { name: 'SOUTH CAROLINA', abbreviation: 'SC'},
-    { name: 'SOUTH DAKOTA', abbreviation: 'SD'},
-    { name: 'TENNESSEE', abbreviation: 'TN'},
-    { name: 'TEXAS', abbreviation: 'TX'},
-    { name: 'UTAH', abbreviation: 'UT'},
-    { name: 'VERMONT', abbreviation: 'VT'},
-    { name: 'VIRGIN ISLANDS', abbreviation: 'VI'},
-    { name: 'VIRGINIA', abbreviation: 'VA'},
-    { name: 'WASHINGTON', abbreviation: 'WA'},
-    { name: 'WEST VIRGINIA', abbreviation: 'WV'},
-    { name: 'WISCONSIN', abbreviation: 'WI'},
-    { name: 'WYOMING', abbreviation: 'WY' }
-];
-
-// <li> template
-// var stateTemplate = _.template(
-//     '<li>' +
-//         '<input name="<%= abbreviation %>" type="checkbox">' +
-//         '<label for="<%= abbreviation %>"><%= capName %></label>' +
-//     '</li>'
-// );
-
-// Populate list with states
-// _.each(usStates, function(s) {
-//     s.capName = _.startCase(s.name.toLowerCase());
-//     $('ul').append(stateTemplate(s));
-// });
-    
-    var stateTemplate = 
-        '<li>' +
-            '<input name="<%= abbreviation %>" type="checkbox">' +
-            '<label for="<%= abbreviation %>"><%= capName %></label>' +
-        '</li>';
-
-    usStates.forEach(function(element) {
-        element.capName = element.name.toLowerCase();
-        //$('.dropdown-list ul').append("<li><input name='"+ element.abbreviation  +"' type='checkbox'></li>");
-    });
-   });
-</script>
-
-<style type="text/css">
-    
 
     .noselect {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
 
-.dropdown-container, .instructions {
-    width: 200px;
-    margin: 20px auto 0;
-    font-size: 14px;
-    font-family: sans-serif;
-}
+    .dropdown-container, .instructions {
+        width: 200px;
+        margin: 20px auto 0;
+        font-size: 14px;
+        font-family: sans-serif;
+    }
 
-.instructions {
-    width: 100%;
-    text-align: center;
-}
+    .instructions {
+        width: 100%;
+        text-align: center;
+    }
 
-.dropdown-button {
-    float: left;
-    width: 100%;
-    background: whitesmoke;
-    padding: 10px 12px;
-
-    cursor: pointer;
-    border: 1px solid lightgray;
-    box-sizing: border-box;
-    
-    .dropdown-label, .dropdown-quantity {
+    .dropdown-button {
         float: left;
-    }
-    
-    .dropdown-quantity {
-        margin-left: 4px;
-    }
-    
-    .fa-filter {
-        float: right;
-    }
-}
+        width: 100%;
+        background: whitesmoke;
+        padding: 10px 12px;
 
-.dropdown-list {
-    float: left;
-    width: 100%;
-
-    border: 1px solid lightgray;
-    border-top: none;
-    box-sizing: border-box;
-    padding: 10px 12px;
+        cursor: pointer;
+        border: 1px solid lightgray;
+        box-sizing: border-box;
     
-    input[type="search"] {
-        padding: 5px 0;
-    }
+        .dropdown-label, .dropdown-quantity {
+            float: left;
+        }
     
-    ul {
-        margin: 10px 0;
-        max-height: 200px;
-        overflow-y: auto;
-        
-        input[type="checkbox"] {
-            position: relative;
-            top: 2px;
+        .dropdown-quantity {
+            margin-left: 4px;
+        }
+    
+        .fa-filter {
+            float: right;
         }
     }
-}
 
+    .dropdown-list {
+        float: left;
+        width: 100%;
 
+        border: 1px solid lightgray;
+        border-top: none;
+        box-sizing: border-box;
+        padding: 10px 12px;
+        
+        input[type="search"] {
+            padding: 5px 0;
+        }
+    
+        ul {
+            margin: 10px 0;
+            max-height: 200px;
+            overflow-y: auto;
+            
+            input[type="checkbox"] {
+                position: relative;
+                top: 2px;
+            }
+        }
+    }
 </style>
+
 </html>
