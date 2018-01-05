@@ -3,21 +3,12 @@
  ********************/
 .carousel-container {
   position:relative;
-<<<<<<< HEAD
   width:100%;
 }
 #carousel {
   height:220px;
   width:100%;
   background-color:rgba(0,0,0,0.6);
-=======
-  width:960px;
-}
-#carousel {
-  height:280px;
-  width:960px;
-  background-color:#CCC;
->>>>>>> 230c1500f976e00a652e0ebbb88ec7ac68b04b28
   position:relative;
   margin-bottom:0.5em;
   font-size:12px;
@@ -81,23 +72,15 @@
 }
 #carousel-left {
   position:absolute;
-<<<<<<< HEAD
   bottom:-100px;
   /*bottom:33px;*/
-=======
-  bottom:33px;
->>>>>>> 230c1500f976e00a652e0ebbb88ec7ac68b04b28
   left:220px;
   cursor:pointer;
 }
 #carousel-right {
   position:absolute;
-<<<<<<< HEAD
  /* bottom:33px;*/
   bottom:-100px; 
-=======
-  bottom:33px;
->>>>>>> 230c1500f976e00a652e0ebbb88ec7ac68b04b28
   right:220px;
   cursor:pointer;
 }
