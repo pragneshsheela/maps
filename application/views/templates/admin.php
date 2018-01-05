@@ -97,9 +97,6 @@
                     </div>
                 </div>
 
-                
-                <button onclick="myFunction()">Click me</button>
-
                 <ul class="nav">
 
                     <li>
@@ -144,30 +141,6 @@
                             </div>
                         </div>
                     </li>
-
-                    <li>
-                        <!-- <button onclick="myFunction()">Click me</button> -->
-
-                    </li>
-
-                    <!-- <li class="route" >Route Name</li>
-                    <li>
-                        <a data-toggle="collapse" href="#componentsExamples">
-                            
-                            <p>Route Name
-                                <b class="caret"></b>
-                            </p>
-                        </a>
-                        <div class="collapse" id="componentsExamples">
-                            <ul id="route" class="nav ">
-                                
-                            </ul>
-                        </div>
-                    </li>    -->
-
-                  
-                    
-                    
                 </ul>
             </div>
         </div>
@@ -370,6 +343,8 @@
         return obj;
     }
 
+    var myMarkers = []; 
+
     var existPath = new Array();    
     var directionsService = new google.maps.DirectionsService();
     var num, map, data;
@@ -435,7 +410,7 @@
                 let number = (Math.floor(Math.random() * (6 - 0 + 1)) + 0);
                 let color = colourArray[number];
                 let dynamicMarkerColor = icons[number];
-                console.log(dynamicMarkerColor);
+                
                 var rander = {
                     draggable :false,
                     polylineOptions:{strokeColor:color},
@@ -475,7 +450,7 @@
                 let number = (Math.floor(Math.random() * (6 - 0 + 1)) + 0);
                 let color = colourArray[number];
                 let dynamicMarkerColor = icons[number];
-                console.log(dynamicMarkerColor);
+                
                 var rander = {
                     draggable :false,
                     polylineOptions:{strokeColor:color},
@@ -493,7 +468,7 @@
                 }
             }
 
-            console.log(existPath);
+            
 
         });
 
@@ -520,7 +495,7 @@
         var routePoi = JSON.parse(routeWp);
         let poi_wayPoint_lists = routePoi.waypoints;
         let poi_wayPoint;
-        console.log(poi_wayPoint_lists);
+        
         let getAllImages = $("#image_" + id).val();
         let slider_images;
         
@@ -530,7 +505,7 @@
             let content  = '';
             let cnt = 0;
             slider_images.forEach(function(element) {
-                console.log(poi_wayPoint_lists[cnt]);
+                
                 $('<div class="carousel-feature"><a href="'+element+'" ><img  class="carousel-image" alt="'+id+'###'+poi_wayPoint_lists[cnt][0]+'###'+poi_wayPoint_lists[cnt][1]+'" src="'+element+'"></a></div>').appendTo('#carousel');
                 cnt++;
             });
@@ -540,18 +515,10 @@
              $("#carousel").featureCarousel({
                 largeFeatureWidth: 400,     // width of image in center
                 largeFeatureHeight: 175,    // height of image in center
-                smallFeatureWidth: .42, 
-                autoPlay:0,    // width of the other images (42% of original width)
+                smallFeatureWidth: .42,     // width of the other images (42% of original width)
                 smallFeatureHeight: .35,     // height of the other images (35% of original height)
                 lightbox: 'image',
                     movedToCenter: function($feature) {
-                      // $feature is a jQuery wrapped object describing the featured that is now in the center position.
-                      // var imageUrl = $feature.find('.carousel-image').attr('src');
-                      // var routeID = $feature.find('.carousel-image').attr('alt');
-                      // console.log('A new feature has moved to the center. The HREF of the image is: ' + $feature);
-                      // console.log(imageUrl);
-                      // console.log($feature);
-
 
                         var imagePath = $feature.find('.carousel-image').attr('src');
                         var imageData = $feature.find('.carousel-image').attr('alt');
@@ -560,29 +527,35 @@
                         let poi_lat = imageDetails[1];
                         let poi_long = imageDetails[2];
 
-
-
                         for (var i in existPath) {
+
                           if(existPath[i][1] == routeID) {
 
-                            // let routeWp = $("#rtWp_" + routeID).val();
-                            // var routePoi = JSON.parse(routeWp);
-                            // let poi_lat = routePoi.start.lat;
-                            // let poi_long = routePoi.start.lng;
+                            if(myMarkers[0]) {
+                                myMarkers[0][0].setMap(null);
+                            }
                             
-                            //console.log(poi_lat);
-                            //console.log(poi_long);
-                            //existPath[i] = new Array();
+                            myMarkers = [];
+                            myMarkers[0] = [];
 
-                            var image= "http://maps.google.com/mapfiles/ms/icons/purple-dot.png";
+                            //existPath[i][0] = new Array();
 
-                            let dynamicMarkerColor = image;
+                            let dynamicMarkerColor = imagePath;
+
                             var icon = {
                                 url: dynamicMarkerColor, // url
-                                scaledSize: new google.maps.Size(40, 40), // scaled size
+                                scaledSize: new google.maps.Size(60, 60), // scaled size
                             }
 
                             
+
+                            var contentString = "<span style='font-size:11px;'><img width='150' src=" + imagePath + "></span>";
+
+                            var infowindow = new google.maps.InfoWindow({
+                                content: contentString
+                            });
+
+
                             var tmpMarker = new google.maps.Marker({
                                 position: new google.maps.LatLng(poi_lat, poi_long),
                                 map: map,
@@ -591,14 +564,25 @@
                             });
 
 
+                            tmpMarker.addListener('click', function() {
+                                infowindow.open(map, tmpMarker);
+                            });
+
+                            myMarkers[0].push(tmpMarker);
+
                             // existPath[i][0] = tmpMarker;                
                             // existPath[i][1] = routeID;
 
+                            
                             // existInfoWindow = new google.maps.InfoWindow({
+                            //     content: "<span style='font-size:11px;'><img width='150' src=" + imagePath + "></span>"
                             // });
-                            // existInfoWindow.open(map,tmpMarker);
 
-                            return false;
+                            //existInfoWindow.open(map,tmpMarker);
+                            // google.maps.event.addListener(tmpMarker, 'click', markerInCallback(existInfoWindow, tmpMarker));
+                            // google.maps.event.addListener(tmpMarker, 'mouseover', markerInCallback(existInfoWindow, tmpMarker));
+                            // google.maps.event.addListener(tmpMarker, 'mouseout', markerOutCallback(existInfoWindow));
+
                           }
                         }
 
