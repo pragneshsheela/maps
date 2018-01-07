@@ -28,7 +28,7 @@
 
     <link rel="stylesheet" href="assets/featurecarousel/css/feature-carousel.css" charset="utf-8" />
     <style type="text/css">
-    
+        
         .carousel-container {
             width: 100% !important;
         }
@@ -106,7 +106,7 @@
                         </div> -->
                     </div>
                 </div>
-
+                
                 <ul class="nav">
 
                     <li>
@@ -140,17 +140,19 @@
                             <label class="control-label">Route Search</label>
                             <div class="dropdown-container">
                                 <div class="dropdown-button noselect">
-                                    <div class="dropdown-label">Routes<!-- <i class="fa fa-filter"></i> -->
-                                    <div class="dropdown-quantity">(<span class="quantity">Any</span>)</div></div>
+                                    <div class="dropdown-label">Routes</div>
+                                    <div class="dropdown-quantity">(<span class="quantity">Any</span>)</div>
+                                    <i class="fa fa-filter"></i>
                                 </div>
                                 <div class="dropdown-list" style="display: none;">
-                                    <input type="search" placeholder="Search Routes" class="dropdown-search"/>
-                                    <ul style="height: 300px; overflow: auto; list-style-type: none; margin-left: -20px;"></ul>
+                                    <input type="search" placeholder="Search states" class="dropdown-search"/>
+                                    <ul style="height: 200px; overflow: auto; list-style-type: none; margin-left: -30px;"></ul>
                                 </div>
                             </div>
                         </div>
                     </li>
                 </ul>
+
             </div>
         </div>
         <div class="main-panel">
@@ -347,7 +349,7 @@
     }
 
     // having waypoints
-    function setroute(wps,rendererOptions) {
+    function setroute(wps, rendererOptions, routeID) {
         var wp = [];
         var os = $.parseJSON(wps);
         var obj = new google.maps.DirectionsRenderer(rendererOptions);
@@ -362,6 +364,9 @@
             travelMode: google.maps.TravelMode.DRIVING
         };
 
+        let markerIcon = rendererOptions.markerOptions.icon
+        createMarker(wps, markerIcon, routeID);
+
         directionsService.route(request, function(response, status) {
             if (status == google.maps.DirectionsStatus.OK) {
                 obj.setDirections(response);
@@ -370,6 +375,67 @@
         });
 
         return obj;
+    }
+
+    function createMarker(waypoints, markerIcon, routeID) {
+
+        let getAllImages = $("#image_" + routeID).val();
+        let slider_images = getAllImages.split(",");;
+
+        console.log(slider_images);
+
+        var routePoi = JSON.parse(waypoints);
+        let tempArray = [ routePoi.start['lat'], routePoi.start['lng'] ];
+        let poi_wayPoint_lists = [];
+        poi_wayPoint_lists = routePoi.waypoints;
+        poi_wayPoint_lists.push(tempArray);
+
+        console.log(poi_wayPoint_lists);
+        let cnt = 0;
+        poi_wayPoint_lists.forEach(element => {
+            
+            let imagePath;
+
+            if(!slider_images[cnt]) {
+                imagePath = slider_images[0];
+                console.log('if');
+            } else {
+                imagePath = slider_images[cnt];
+                console.log('else' + cnt);
+            }
+
+            let poi_lat = element[0];
+            let poi_long = element[1];
+
+            let dynamicMarkerColor = markerIcon;
+            
+
+            var icon = {
+                url: dynamicMarkerColor, // url
+            }
+
+            var contentString = "<span style='font-size:11px;'><img width='150' src=" + imagePath + "></span>";
+
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString
+            });
+            var tmpMarker = new google.maps.Marker({
+                position: new google.maps.LatLng(poi_lat, poi_long),
+                map: map,
+                icon : icon,
+                animation: google.maps.Animation.DROP
+            });
+
+            tmpMarker.addListener('click', function() {
+                infowindow.open(map, tmpMarker);
+            });
+
+            cnt++;
+
+        });
+
+        // 
+
     }
 
     var myMarkers = []; 
@@ -444,11 +510,12 @@
                     draggable :false,
                     polylineOptions:{strokeColor:color},
                     markerOptions: { icon: dynamicMarkerColor},
+                    suppressMarkers: true,
                 };
                 if( wp == "" ) {
                     existPath[pathsCnt][0] = showRoute(origin,des,rander);
                 } else {
-                    existPath[pathsCnt][0] = setroute(wp,rander);
+                    existPath[pathsCnt][0] = setroute(wp, rander, rtId);
                 }
                 existPath[pathsCnt][1] = $this.siblings('.rtId').val();
                 pathsCnt++;
@@ -484,6 +551,7 @@
                     draggable :false,
                     polylineOptions:{strokeColor:color},
                     markerOptions: { icon: dynamicMarkerColor},
+                    suppressMarkers: true,
                 };
 
                 if (pathLength == 0) {
@@ -493,7 +561,7 @@
                 } else {
                     let last_id = existPath[existPathLastKeyNumber][1];
                     let wp = $('#rtWp_' + last_id).val();
-                    setroute(wp,rander);
+                    setroute(wp, rander, rtId);
                 }
             }
 
