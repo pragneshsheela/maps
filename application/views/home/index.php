@@ -1,7 +1,7 @@
 
 <div  id="map"></div>
 
-<div style="position: absolute !important ; bottom: 275px;"  class="carousel-container">
+<div style="position: absolute !important ; bottom: 220PX;"  class="carousel-container">
     <button style="top:5px;" class="" id="slider_remove_btn">
     <i class="material-icons">close</i><div class="ripple-container"></div>
     </button>
@@ -16,7 +16,7 @@
     <i class="material-icons">close</i><div class="ripple-container"></div>
 </button> -->
 
-
+<div class="row" style="display: none">
 <div class="carousel-container">
     <div id="carousel">
     </div>
@@ -28,7 +28,7 @@
     <i class="material-icons">close</i> Remove Slider
     <div class="ripple-container"></div>
 </button>
-
+</div>
 
 <div class="row" style="display: none">
     <div class="col-md-4">

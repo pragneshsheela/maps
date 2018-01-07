@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+date_default_timezone_set('Asia/Kolkata');
 
 class Home extends CI_Controller {
 
@@ -47,8 +48,9 @@ class Home extends CI_Controller {
 	}
 
 	public function getroutes() {
-
+		
 		$output = null; 	
+		//$id_ccity = 827;
 		$id_ccity = $this->input->post('id',TRUE);
 		$data['routes'] = $this->mapshome_model->get_routes($id_ccity);
 		// echo $this->db->last_query();
@@ -57,13 +59,15 @@ class Home extends CI_Controller {
 		$cnt = 0;
 		$len = count($data['routes']);
 		foreach ($data['routes'] as $row) {
-		 	$route_id = $row['route_id'];
+
+		 	$route_id = $row['route_id'];		 	
 			if(!isset($route[$route_id])) {
 				$route[$route_id] = [];
 				$route[$route_id]['latitude'] = $row['route_latitude'];
 				$route[$route_id]['longitude'] = $row['route_longitude'];
 				//$route[$route_id]['image'] = $row['poi_image'];
 				$route[$route_id]['image'] = [];
+				$route[$route_id]['imagecaption'] = [];
 				$route[$route_id]['waypoints_latitude_longitude'] = [];
 			};
 
@@ -75,14 +79,18 @@ class Home extends CI_Controller {
 			if($row['poi_image']) {
 				array_push($route[$route_id]['image'], $row['poi_image']);
 			}
+			if($row['poi_address']) {
+
+				array_push($route[$route_id]['imagecaption'], urlencode($row['poi_address']));
+			}
 
 			$cnt++;
 			if($cnt  == $len) {
 				$cnt_new = 1;
-				foreach ($route as $key => $value) {
-
+				foreach ($route as $key => $value) {					
 					if($key) {
 						$slider_image = '';
+						$slider_imagecaption = '';
 						if(count($value['waypoints_latitude_longitude']) !== 0) {
 							$waypoints_latitude_longitude = '';
 							$c=1;
@@ -98,7 +106,8 @@ class Home extends CI_Controller {
 							}
 						}
 						$slider_image .= implode(",", $value['image']);
-						
+						$slider_imagecaption .= implode(",", $value['imagecaption']);
+
 						$output .= "<li><div><input class='chkRoute' id="."way_".$key." name='waypoints[]' type='checkbox' ><span onclick='routeFun(".$key.");' class='cursor_pointer'>".$row['route_name']."</span><input type='hidden' class='rtId' value='".$key."'>
 		                <input type='hidden' class='rtOrig' value=''>
 		                <input type='hidden' class='rtDest' value=''>
@@ -107,6 +116,7 @@ class Home extends CI_Controller {
 		                <input type='hidden' class='rtDlat' value='".$value['latitude']."'>
 		                <input type='hidden' class='rtDlng' value='".$value['longitude']."'>
 		                <input type='hidden' id="."image_".$key." value='".$slider_image."'>
+		                <input type='hidden' id="."imagecaption_".$key." value='".$slider_imagecaption."'>		                
 						<input type='hidden' class='rtWp' id='rtWp_".$key."' value='{&quot;start&quot;:{&quot;lat&quot;:".$value['latitude'].",&quot;lng&quot;:".$value['longitude']."},&quot;end&quot;:{&quot;lat&quot;:".$value['latitude'].",&quot;lng&quot;:".$value['longitude']."},&quot;waypoints&quot;:[".$waypoints_latitude_longitude."]}'></div></li>";
 					$cnt_new++;
 					}

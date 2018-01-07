@@ -28,6 +28,7 @@
 
     <link rel="stylesheet" href="assets/featurecarousel/css/feature-carousel.css" charset="utf-8" />
     <style type="text/css">
+        
         .carousel-container {
             width: 100% !important;
         }
@@ -42,6 +43,15 @@
         var mapOptions = {
             center: new google.maps.LatLng(20.593684, 78.96288),
             zoom: 5,
+            mapTypeControl: true,
+                    mapTypeControlOptions: {
+                          style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                          position: google.maps.ControlPosition.TOP_LEFT
+                      },
+                    zoomControl: true,
+                    zoomControlOptions: {
+                          position: google.maps.ControlPosition.LEFT_TOP
+                      },
             mapTypeControl: true,            
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
@@ -72,16 +82,16 @@
             </div>
             <div class="sidebar-wrapper">
                 <div class="user">
-                    <div class="photo">
-                        <img src="assets/img/faces/avatar.jpg" />
+                    <div class="photo image-link">
+                        <a href="assets/img/faces/avatar.jpg" class="image-link"><img src="assets/img/faces/avatar.jpg" /></a>
                     </div>
                     <div class="info">
                         <a data-toggle="collapse" href="#collapseExample" class="collapsed">
                             <?php //echo $username; ?>
                             admin@admin.com
-                            <b class="caret"></b>
+                           <!--  <b class="caret"></b> -->
                         </a>
-                        <div class="collapse" id="collapseExample">
+                       <!--  <div class="collapse" id="collapseExample">
                             <ul class="nav">
                                 <li>
                                     <a href="#">My Profile</a>
@@ -93,7 +103,7 @@
                                     <a href="#">Settings</a>
                                 </li>
                             </ul>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
 
@@ -130,13 +140,12 @@
                             <label class="control-label">Route Search</label>
                             <div class="dropdown-container">
                                 <div class="dropdown-button noselect">
-                                    <div class="dropdown-label">Routes</div>
-                                    <div class="dropdown-quantity">(<span class="quantity">Any</span>)</div>
-                                    <i class="fa fa-filter"></i>
+                                    <div class="dropdown-label">Routes<!-- <i class="fa fa-filter"></i> -->
+                                    <div class="dropdown-quantity">(<span class="quantity">Any</span>)</div></div>
                                 </div>
                                 <div class="dropdown-list" style="display: none;">
-                                    <input type="search" placeholder="Search states" class="dropdown-search"/>
-                                    <ul style="height: 200px; overflow: auto; list-style-type: none; margin-left: -30px;"></ul>
+                                    <input type="search" placeholder="Search Routes" class="dropdown-search"/>
+                                    <ul style="height: 300px; overflow: auto; list-style-type: none; margin-left: -20px;"></ul>
                                 </div>
                             </div>
                         </div>
@@ -187,6 +196,13 @@
                     </div>
                 </div>
             </nav>
+            <?php
+                function decode($val){
+                    $val_val = urldecode($val);
+                    return $val_val;
+                } 
+             ?>
+
             
             <?php echo $body; ?>
         </div>
@@ -236,6 +252,10 @@
 <script src="assets/js/demo.js"></script>
 
 <script src="assets/featurecarousel/js/jquery.featureCarousel.js" type="text/javascript" charset="utf-8"></script>
+<!-- <link rel="stylesheet" href="assets/css/viewbox.css"/>
+<script src="assets/js/jquery.viewbox.min.js"></script> -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
 
 <link rel="stylesheet" href="assets/css/chosen.css"/>
 <script src="assets/js/custom/chosen.jquery.js"></script>
@@ -264,7 +284,16 @@
                 let mapOptions = {
                     center: new google.maps.LatLng(citylat, citylng),
                     zoom: 10,
-                    mapTypeControl: true
+                    mapTypeControl: true,
+                    mapTypeControlOptions: {
+                          style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                          position: google.maps.ControlPosition.TOP_LEFT
+                      },
+                    zoomControl: true,
+                    zoomControlOptions: {
+                          position: google.maps.ControlPosition.LEFT_TOP
+                      },
+                    mapTypeControl: true, 
                 };  
                 map = new google.maps.Map(document.getElementById('map'), mapOptions);
                 $.ajax({
@@ -478,6 +507,7 @@
         demo.initVectorMap();
 
         $('#slider_remove_btn').click(function(){
+
             $('#carousel').html('');
             $(".carousel-container").hide();
             $("#slider_remove_btn").hide();
@@ -497,17 +527,46 @@
         let poi_wayPoint;
         
         let getAllImages = $("#image_" + id).val();
+        let getAllImagescaption = $("#imagecaption_" + id).val();
         let slider_images;
+        let sliderimagecaption;
         
         if(getAllImages !== '') {
             
             slider_images = getAllImages.split(",");
+            console.log(getAllImagescaption);
+            sliderimagecaption = getAllImagescaption.split(",");
             let content  = '';
             let cnt = 0;
+            
             slider_images.forEach(function(element) {
+                let  tempimagecap = decodeURIComponent(sliderimagecaption[0]);
+                //var res = tempimagecap.replace("+", " ");
+                   function findAndReplace(string, target, replacement) {
+ 
+                         var i = 0, length = string.length;
+                         
+                         for (i; i < length; i++) {
+                         
+                           string = string.replace(target, replacement);
+                         
+                         }
+                         
+                         return string;
+                         
+                        }
+                     
+                    //console.log(str);
+
+            $('<div class="carousel-feature"><a  href="'+element+'" data-fancybox="filter" data-caption="'+findAndReplace(tempimagecap, "+", " ")+'" ><img  class="carousel-image" alt="'+id+'###'+poi_wayPoint_lists[cnt][0]+'###'+poi_wayPoint_lists[cnt][1]+'" src="'+element+'"></a></div>').appendTo('#carousel');
+
+                        
+               
+
                 
-                $('<div class="carousel-feature"><a href="'+element+'" ><img  class="carousel-image" alt="'+id+'###'+poi_wayPoint_lists[cnt][0]+'###'+poi_wayPoint_lists[cnt][1]+'" src="'+element+'"></a></div>').appendTo('#carousel');
+                
                 cnt++;
+                
             });
 
 
@@ -515,10 +574,10 @@
              $("#carousel").featureCarousel({
                 largeFeatureWidth: 400,     // width of image in center
                 largeFeatureHeight: 175,    // height of image in center
-                smallFeatureWidth: .42,     // width of the other images (42% of original width)
-                smallFeatureHeight: .35,     // height of the other images (35% of original height)
-                lightbox: 'image',
-                    movedToCenter: function($feature) {
+                smallFeatureWidth: .85,     // width of the other images (42% of original width)
+                smallFeatureHeight: .60,
+                autoplay:0,     // height of the other images (35% of original height)                
+                movedToCenter: function($feature) {
 
                         var imagePath = $feature.find('.carousel-image').attr('src');
                         var imageData = $feature.find('.carousel-image').attr('alt');
@@ -560,7 +619,7 @@
                                 position: new google.maps.LatLng(poi_lat, poi_long),
                                 map: map,
                                 icon : icon,
-                                animation: google.maps.Animation.DROP
+                                //animation: google.maps.Animation.DROP
                             });
 
 
@@ -604,6 +663,22 @@
     }
 
     $(document).ready(function(){
+       
+        $('[data-fancybox]').fancybox({
+                selector : '[data-fancybox="filter"]:visible',               
+                image : {
+
+                        // Wait for images to load before displaying
+                        // Requires predefined image dimensions
+                        // If 'auto' - will zoom in thumbnail if 'width' and 'height' attributes are found
+                        preload : "auto"
+
+                        },
+                  buttons : [                    
+                    'close'
+                  ]
+                });        
+
         $("select").chosen({allow_single_deselect:true});
 
         $('.dropdown-container')
@@ -637,79 +712,89 @@
 </script>
 
 <style type="text/css">
-    
-    .cursor_pointer {
-        cursor: pointer;
-    }
-
     .noselect {
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-    }
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 
-    .dropdown-container, .instructions {
-        width: 200px;
-        margin: 20px auto 0;
-        font-size: 14px;
-        font-family: sans-serif;
-    }
+.dropdown-container, .instructions {
+    width: 100%;
+    margin: 20px auto 0;
+    font-size: 14px;
+    font-family: sans-serif;
+}
 
-    .instructions {
-        width: 100%;
-        text-align: center;
-    }
+.instructions {
+    width: 100%;
+    text-align: center;
+}
 
-    .dropdown-button {
+.dropdown-button {
+    float: right;
+    width: 100%;
+    background-color: gray;
+    background: whitesmoke;
+    padding: 10px 12px;
+
+    cursor: pointer;
+    border: 1px solid lightgray;
+    box-sizing: border-box;
+    
+    .dropdown-label, .dropdown-quantity {
         float: left;
-        width: 100%;
-        background: whitesmoke;
-        padding: 10px 12px;
-
-        cursor: pointer;
-        border: 1px solid lightgray;
-        box-sizing: border-box;
-    
-        .dropdown-label, .dropdown-quantity {
-            float: left;
-        }
-    
-        .dropdown-quantity {
-            margin-left: 4px;
-        }
-    
-        .fa-filter {
-            float: right;
-        }
     }
+    
+    .dropdown-quantity {
+        margin-left: 4px;
+    }
+    
+    .fa-filter {
+        float: right;
+    }
+}
 
-    .dropdown-list {
-        float: left;
-        width: 100%;
+.dropdown-list {
+    float: left;
+    width: 100%;
 
-        border: 1px solid lightgray;
-        border-top: none;
-        box-sizing: border-box;
-        padding: 10px 12px;
+    /*border: 1px solid lightgray;*/
+    /*border-top: none;*/
+    box-sizing: border-box;
+    /*padding: 10px 12px;*/
+    
+    input[type="search"] {
+        padding: 5px 0;
+    }
+    
+    ul {
+        margin: 10px 0;
+        max-height: 200px;
+        overflow-y: auto;
         
-        input[type="search"] {
-            padding: 5px 0;
-        }
-    
-        ul {
-            margin: 10px 0;
-            max-height: 200px;
-            overflow-y: auto;
-            
-            input[type="checkbox"] {
-                position: relative;
-                top: 2px;
-            }
+        input[type="checkbox"] {
+            position: relative;
+            top: 2px;
         }
     }
+}
+.dropdown-list .dropdown-search{
+    width: 100%;
+}
+.dropdown-list ul{
+    list-style-type:none;
+    padding-left: 25px;
+     padding-bottom: 5px;
+}
+
+.sidebar[data-background-color="black"] .nav li i, .off-canvas-sidebar[data-background-color="black"] .nav li i
+{
+    color:black  !important ;
+    float: right;
+}
 </style>
 
 </html>

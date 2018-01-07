@@ -1,5 +1,5 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-
+<?php
 class Mapshome_model extends CI_Model {
  
     /**

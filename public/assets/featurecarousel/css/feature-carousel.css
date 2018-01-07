@@ -74,13 +74,13 @@
   position:absolute;
   bottom:-100px;
   /*bottom:33px;*/
-  left:220px;
+  left:350px;
   cursor:pointer;
 }
 #carousel-right {
   position:absolute;
  /* bottom:33px;*/
   bottom:-100px; 
-  right:220px;
+  right:350px;
   cursor:pointer;
 }

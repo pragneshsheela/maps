@@ -75,6 +75,10 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
+	// 'hostname' => '13.126.133.170',
+	// 'username' => 'root',
+	// 'password' => 'AmulTracks23',
+	// 'database' => 'amul',
 	'hostname' => 'localhost',
 	'username' => 'root',
 	'password' => '',
