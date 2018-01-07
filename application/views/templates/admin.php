@@ -28,7 +28,7 @@
 
     <link rel="stylesheet" href="assets/featurecarousel/css/feature-carousel.css" charset="utf-8" />
     <style type="text/css">
-        
+    
         .carousel-container {
             width: 100% !important;
         }
