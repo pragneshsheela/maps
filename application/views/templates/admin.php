@@ -6,12 +6,13 @@
     <link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png" />
     <link rel="icon" type="image/png" href="assets/img/favicon.png" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <title>:: Role and Permission ::</title>
+    <title>:: Amul Tracks ::</title>
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
     <!-- Canonical SEO -->
     <link rel="canonical" href="https://www.creative-tim.com/product/material-dashboard-pro" />
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzJPzAiUl4hKQ0mPNYe1AuyA6ByOs_k9Y&sensor=false"></script>
+   <!--  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzJPzAiUl4hKQ0mPNYe1AuyA6ByOs_k9Y&sensor=false"></script> -->
+   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPFIDhfW_Lw5ksH_G8zzG7lcfLDpHOJwM&sensor=false"></script>
     <!--  Social tags      -->
    
     <!-- Schema.org markup for Google+ -->
@@ -52,6 +53,10 @@
                     zoomControlOptions: {
                           position: google.maps.ControlPosition.LEFT_TOP
                       },
+                    streetViewControl: true,
+                    streetViewControlOptions: {
+                     position: google.maps.ControlPosition.LEFT_TOP
+          },
             mapTypeControl: true,            
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
@@ -72,7 +77,7 @@
         <div class="sidebar" data-active-color="rose" data-background-color="black" data-image="assets/img/sidebar-1.jpg">
             <div class="logo">
                 <a href="#" class="simple-text">
-                    Role and Permission
+                    Amul Tracks
                 </a>
             </div>
             <div class="logo logo-mini">
@@ -81,17 +86,17 @@
                 </a>
             </div>
             <div class="sidebar-wrapper">
-                <div class="user">
+               <!--  <div class="user">
                     <div class="photo image-link">
                         <a href="assets/img/faces/avatar.jpg" class="image-link"><img src="assets/img/faces/avatar.jpg" /></a>
                     </div>
                     <div class="info">
                         <a data-toggle="collapse" href="#collapseExample" class="collapsed">
-                            <?php //echo $username; ?>
-                            admin@admin.com
-                           <!--  <b class="caret"></b> -->
+                            <?php echo $username; ?>
+                            
+                           <!--  <b class="caret"></b> 
                         </a>
-                       <!--  <div class="collapse" id="collapseExample">
+                        <div class="collapse" id="collapseExample">
                             <ul class="nav">
                                 <li>
                                     <a href="#">My Profile</a>
@@ -103,9 +108,9 @@
                                     <a href="#">Settings</a>
                                 </li>
                             </ul>
-                        </div> -->
+                        </div>
                     </div>
-                </div>
+                </div> -->
                 
                 <ul class="nav">
 
@@ -140,13 +145,14 @@
                             <label class="control-label">Route Search</label>
                             <div class="dropdown-container">
                                 <div class="dropdown-button noselect">
-                                    <div class="dropdown-label">Routes</div>
-                                    <div class="dropdown-quantity">(<span class="quantity">Any</span>)</div>
-                                    <i class="fa fa-filter"></i>
+                                    <div class="dropdown-label">Routes
+                                       <span class="dropdown-quantity">(<span class="quantity"> 0 </span>)
+                                       </span>
+                                    </div>
                                 </div>
                                 <div class="dropdown-list" style="display: none;">
-                                    <input type="search" placeholder="Search states" class="dropdown-search"/>
-                                    <ul style="height: 200px; overflow: auto; list-style-type: none; margin-left: -30px;"></ul>
+                                    <input type="search" placeholder="Search Routes" class="dropdown-search"/>
+                                    <ul style="height:400px; overflow: auto; list-style-type: none; margin-left: -20px;"></ul>
                                 </div>
                             </div>
                         </div>
@@ -158,27 +164,30 @@
         <div class="main-panel">
             <nav class="navbar navbar-transparent navbar-absolute">
                 <div class="container-fluid">
-                    <div class="navbar-minimize">
+                        <div class="navbar-minimize">
+                        <img style="height:54px; width:54px;" src="assets/img/faces/avatar.jpg" /></div>
+                    
+                   <!--  <div class="navbar-minimize">
                         <button id="minimizeSidebar" class="btn btn-round btn-white btn-fill btn-just-icon">
                             <i class="material-icons visible-on-sidebar-regular">more_vert</i>
                             <i class="material-icons visible-on-sidebar-mini">view_list</i>
                         </button>
-                    </div>
+                    </div> -->
                     <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse">
+                       <!--  <button type="button" class="navbar-toggle" data-toggle="collapse">
                             <span class="sr-only">Toggle navigation</span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="#"> Dashboard </a>
+                        <a class="navbar-brand" href="#"> Dashboard </a> -->
                     </div>
                     <div class="collapse navbar-collapse">
                         <ul class="nav navbar-nav navbar-right">
                             <li>
+
                                 <a href="#pablo" class="dropdown-toggle" data-toggle="dropdown">
-                                    <i class="material-icons">dashboard</i>
-                                    <p class="hidden-lg hidden-md">Dashboard</p>
+                                    <?php echo $username; ?>
                                 </a>
                             </li>
                             <li class="dropdown">
@@ -273,6 +282,7 @@
 
       $(".dropdown-list").hide();
       $('.dropdown-list ul').html('');
+      $('.quantity').text('0');
 
       let city = $(this).val()
       let res = city.split("-");
@@ -295,11 +305,16 @@
                     zoomControlOptions: {
                           position: google.maps.ControlPosition.LEFT_TOP
                       },
-                    mapTypeControl: true, 
+                    mapTypeControl: true,
+                    streetViewControl: true,
+                    streetViewControlOptions: {
+                          position: google.maps.ControlPosition.LEFT_TOP
+                    }
+
                 };  
                 map = new google.maps.Map(document.getElementById('map'), mapOptions);
                 $.ajax({
-                    url:"/maps/home/getroutes",
+                    url:"<?php echo base_url(); ?>home/getroutes",
                     data: "id="+cityid,
                     type: "POST",
                     dataType: "html",
@@ -380,9 +395,12 @@
     function createMarker(waypoints, markerIcon, routeID) {
 
         let getAllImages = $("#image_" + routeID).val();
-        let slider_images = getAllImages.split(",");;
+        let getAllImagescaption = $("#imagecaption_" + routeID).val();
 
-        console.log(slider_images);
+        let slider_images = getAllImages.split(",");
+        let sliderimagecaption = getAllImagescaption.split(",");
+
+        //console.log(slider_images);
 
         var routePoi = JSON.parse(waypoints);
         let tempArray = [ routePoi.start['lat'], routePoi.start['lng'] ];
@@ -390,18 +408,21 @@
         poi_wayPoint_lists = routePoi.waypoints;
         poi_wayPoint_lists.push(tempArray);
 
-        console.log(poi_wayPoint_lists);
+        //console.log(poi_wayPoint_lists);
         let cnt = 0;
         poi_wayPoint_lists.forEach(element => {
             
             let imagePath;
+            let imagecaption;
 
             if(!slider_images[cnt]) {
                 imagePath = slider_images[0];
-                console.log('if');
+                imagecaption = decodeURIComponent(sliderimagecaption[0]);
+                //console.log('if');
             } else {
                 imagePath = slider_images[cnt];
-                console.log('else' + cnt);
+                imagecaption = decodeURIComponent(sliderimagecaption[cnt]);
+                //console.log('else' + cnt);
             }
 
             let poi_lat = element[0];
@@ -414,10 +435,21 @@
                 url: dynamicMarkerColor, // url
             }
 
-            var contentString = "<span style='font-size:11px;'><img width='150' src=" + imagePath + "></span>";
+
+            function findAndReplace(string, target, replacement) { 
+                    var i = 0, length = string.length;                         
+                         for (i; i < length; i++) {                         
+                           string = string.replace(target, replacement);                         
+                         }                         
+                         return string;                         
+            }
+
+            var contentString = "<div style='width:400px;font-size:12px;text-align:center;padding-bottom:20px;' class='infoW'><div style='padding-bottom:10px;padding-top:10px;'><span style='font-size:11px;vartical-align:center;'><img height='175' width='350' src=" + imagePath + "></span></div><br><b style='text-align:center;'>"+findAndReplace(imagecaption, "+", " ")+"</b></div>";
 
             var infowindow = new google.maps.InfoWindow({
-                content: contentString
+                content: contentString,
+
+                
             });
             var tmpMarker = new google.maps.Marker({
                 position: new google.maps.LatLng(poi_lat, poi_long),
@@ -425,6 +457,10 @@
                 icon : icon,
                 animation: google.maps.Animation.DROP
             });
+
+            if(!gmarkers[routeID]) { gmarkers[routeID] = []; } 
+
+            gmarkers[routeID].push(tmpMarker);
 
             tmpMarker.addListener('click', function() {
                 infowindow.open(map, tmpMarker);
@@ -439,6 +475,7 @@
     }
 
     var myMarkers = []; 
+    var gmarkers = [];
 
     var existPath = new Array();    
     var directionsService = new google.maps.DirectionsService();
@@ -512,12 +549,48 @@
                     markerOptions: { icon: dynamicMarkerColor},
                     suppressMarkers: true,
                 };
-                if( wp == "" ) {
-                    existPath[pathsCnt][0] = showRoute(origin,des,rander);
+
+                var os = $.parseJSON(wp);
+                
+                if(os.waypoints.length <= 23) {
+                    
+                    if( wp == "" ) {
+                        existPath[pathsCnt][0] = showRoute(origin,des,rander);
+                    } else {
+                        existPath[pathsCnt][0] = setroute(wp, rander, rtId);
+                    }
+                    existPath[pathsCnt][1] = $this.siblings('.rtId').val();
+                    
                 } else {
-                    existPath[pathsCnt][0] = setroute(wp, rander, rtId);
+                    
+                    for (var i = 0, parts = [], max = 23 - 1; i < os.waypoints.length; i = i + max) {
+                        parts.push(os.waypoints.slice(i, i + max + 1));
+                    }
+
+                    existPath[pathsCnt][0] = [];
+                    
+                    for (var i = 0; i < parts.length; i++) {
+                        
+                        var origin_lat_value = parts[i][0][0];
+                        var origin_lng_value = parts[i][0][1];
+
+                        var destination_lat_value = parts[i][parts[i].length - 1][0];
+                        var destination_lng_value = parts[i][parts[i].length - 1][1];
+
+                        let tempArrayWp = {};
+
+                        tempArrayWp['start'] = { "lat": origin_lat_value, "lng": origin_lng_value };
+                        tempArrayWp['end'] = { "lat": destination_lat_value, "lng": destination_lng_value };
+                        tempArrayWp['waypoints'] = parts[i];
+
+                        var jsonWp = JSON.stringify(tempArrayWp);
+
+                        existPath[pathsCnt][0][i] = setroute(jsonWp, rander, rtId);
+                    }
+
+                    existPath[pathsCnt][1] = $this.siblings('.rtId').val();
                 }
-                existPath[pathsCnt][1] = $this.siblings('.rtId').val();
+                
                 pathsCnt++;
 
             } else {
@@ -526,43 +599,104 @@
                 $this.find(':checkbox').prop('checked',false);
 
                 let current_id = $this.siblings('.rtId').val();
-                let lastcount = 1;
-                let len = existPath.length;
-                let existPathLastKeyNumber = '';
-                for (var k in existPath){
-                    if (typeof existPath[k] !== 'function') {
-                         if(current_id == existPath[k][1]) {
-                            existPath.splice([k], 1);
-                         }
-                    }
-                    lastcount++;
-                    if(lastcount == len) {
-                        existPathLastKeyNumber = k;
-                    }
-                }
 
-                let pathLength = existPath.length;
-                //var color = getRandomColor();
-                let number = (Math.floor(Math.random() * (6 - 0 + 1)) + 0);
-                let color = colourArray[number];
-                let dynamicMarkerColor = icons[number];
+                for (var k in existPath){ 
+
+                    if(existPath[k][1] == current_id) { 
+
+                        
+                        if(Array.isArray(existPath[k][0])) {
+                            for (var i = 0; i < existPath[k][0].length; i++) {
+                                existPath[k][0][i].setMap(null);
+                            }
+                        } else {
+                            existPath[k][0].setMap(null);
+                        }
+
+
+                        for (var k1 in gmarkers){ 
+
+                            if( k1 == current_id) { 
+
+                                if(gmarkers[k1].length !== 0) { 
+
+                                    for (var k2 in gmarkers[k1]) { 
+                                        gmarkers[k1][k2].setMap(null); 
+                                    } 
+                                } 
+                            }
+                        } 
+                        
+                        if (k !== -1) { 
+
+                            existPath.splice(k, 1); gmarkers[k] = []; 
+                            pathsCnt--; 
+                        } 
+                    } 
+                } 
+
+                let mapLength = existPath.length; 
+
+                if(mapLength == 0) { 
+
+                    existPath = []; 
+
+                    pathsCnt = 0; 
+
+                    $(".city").trigger("change"); 
+
+                } else if (mapLength >= 1) { 
+
+                    let lastIndex = mapLength - 1; 
+                    let rtId = existPath[lastIndex][1]; 
+                    let wp = $('#rtWp_' + rtId).val(); 
+                    let number = (Math.floor(Math.random() * (6 - 0 + 1)) + 0); 
+                    let color = colourArray[number]; 
+                    let dynamicMarkerColor = icons[number]; 
+
+                    var rander = { 
+                        draggable :false, 
+                        polylineOptions:{strokeColor:color}, 
+                        markerOptions: { icon: dynamicMarkerColor}, 
+                        suppressMarkers: true, 
+                    }; 
+
+                    var os = $.parseJSON(wp);
+
+                    if(os.waypoints.length <= 23) {
+                        
+                        setroute(wp, rander, rtId);
+
+                    } else {
+                    
+                        for (var i = 0, parts = [], max = 23 - 1; i < os.waypoints.length; i = i + max) {
+                            parts.push(os.waypoints.slice(i, i + max + 1));
+                        }
+
+                        for (var i = 0; i < parts.length; i++) {
+                            
+                            var origin_lat_value = parts[i][0][0];
+                            var origin_lng_value = parts[i][0][1];
+
+                            var destination_lat_value = parts[i][parts[i].length - 1][0];
+                            var destination_lng_value = parts[i][parts[i].length - 1][1];
+
+                            let tempArrayWp = {};
+
+                            tempArrayWp['start'] = { "lat": origin_lat_value, "lng": origin_lng_value };
+                            tempArrayWp['end'] = { "lat": destination_lat_value, "lng": destination_lng_value };
+                            tempArrayWp['waypoints'] = parts[i];
+
+                            var jsonWp = JSON.stringify(tempArrayWp);
+
+                            setroute(jsonWp, rander, rtId);
+                        }
+                    }
+
+                } else { 
+
+                }
                 
-                var rander = {
-                    draggable :false,
-                    polylineOptions:{strokeColor:color},
-                    markerOptions: { icon: dynamicMarkerColor},
-                    suppressMarkers: true,
-                };
-
-                if (pathLength == 0) {
-                    existPath = [];
-                    pathsCnt = 0;
-                    $(".city").trigger("change");
-                } else {
-                    let last_id = existPath[existPathLastKeyNumber][1];
-                    let wp = $('#rtWp_' + last_id).val();
-                    setroute(wp, rander, rtId);
-                }
             }
 
             
@@ -585,6 +719,10 @@
 
     function routeFun(id) {
 
+         $(".dropdown-list>ul>li>div>span.active").removeClass("active");
+        //$(".way_"+id).removeClass("active");   
+
+        $('.way_'+id).addClass('active');
         $('#carousel').html('');
         $(".carousel-container").hide();
         $("#slider_remove_btn").hide();
@@ -602,29 +740,24 @@
         if(getAllImages !== '') {
             
             slider_images = getAllImages.split(",");
-            console.log(getAllImagescaption);
+            //console.log(getAllImagescaption);
             sliderimagecaption = getAllImagescaption.split(",");
             let content  = '';
             let cnt = 0;
             
             slider_images.forEach(function(element) {
-                let  tempimagecap = decodeURIComponent(sliderimagecaption[0]);
+                let  tempimagecap = decodeURIComponent(sliderimagecaption[cnt]);
                 //var res = tempimagecap.replace("+", " ");
                    function findAndReplace(string, target, replacement) {
  
-                         var i = 0, length = string.length;
-                         
-                         for (i; i < length; i++) {
-                         
-                           string = string.replace(target, replacement);
-                         
-                         }
-                         
-                         return string;
-                         
+                         var i = 0, length = string.length;                         
+                         for (i; i < length; i++) {                         
+                           string = string.replace(target, replacement);                         
+                         }                         
+                         return string;                         
                         }
-                     
-                    //console.log(str);
+
+                        //console.log(str);
 
             $('<div class="carousel-feature"><a  href="'+element+'" data-fancybox="filter" data-caption="'+findAndReplace(tempimagecap, "+", " ")+'" ><img  class="carousel-image" alt="'+id+'###'+poi_wayPoint_lists[cnt][0]+'###'+poi_wayPoint_lists[cnt][1]+'" src="'+element+'"></a></div>').appendTo('#carousel');
 
@@ -679,7 +812,9 @@
                             var contentString = "<span style='font-size:11px;'><img width='150' src=" + imagePath + "></span>";
 
                             var infowindow = new google.maps.InfoWindow({
-                                content: contentString
+                                content: contentString,
+                                
+
                             });
 
 
@@ -747,7 +882,53 @@
                   ]
                 });        
 
-        $("select").chosen({allow_single_deselect:true});
+         $("select").chosen({allow_single_deselect:true});
+        // $( ".search-choice-close" ).click(function() {
+        //          console.log("ddd");
+        //          });
+         $('select').on('change', function(evt, params) {
+           
+           if(params == undefined){
+             var  mmLatLng = new google.maps.LatLng(20.593684, 78.96288);
+             let mapOptions = {
+                    center: mmLatLng,
+                    zoom: 10,
+                    mapTypeControl: true,
+                    mapTypeControlOptions: {
+                          style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                          position: google.maps.ControlPosition.TOP_LEFT
+                      },
+                    zoomControl: true,
+                    zoomControlOptions: {
+                          position: google.maps.ControlPosition.LEFT_TOP
+                      },
+                    mapTypeControl: true,
+                    streetViewControl: true,
+                    streetViewControlOptions: {
+                          position: google.maps.ControlPosition.LEFT_TOP
+                    }
+
+                };  
+                console.log(mapOptions);
+                var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+                var marker = new google.maps.Marker({
+                    position: mmLatLng,                    
+                });
+
+                // To add the marker to the map, call setMap();
+                marker.setMap(map);
+                // map = new google.maps.Map(document.getElementById('map'), mapOptions);
+                // google.maps.event.addListener(map, 'zoom_changed',init);
+                google.maps.event.trigger(map, 'resize',mapOptions);
+
+                console.log("sssss");
+           }
+
+            //do_something(evt, params);
+          });
+               
+
 
         $('.dropdown-container')
         .on('click', '.dropdown-button', function() {
@@ -772,7 +953,7 @@
         })
         .on('change', '[type="checkbox"]', function() {
             var numChecked = $('[type="checkbox"]:checked').length;
-            $('.quantity').text(numChecked || 'Any');
+            $('.quantity').text(numChecked || '0');
         });
 
     });
@@ -780,6 +961,19 @@
 </script>
 
 <style type="text/css">
+
+.cursor_pointer{
+
+    cursor: pointer;
+    color:#fff;
+
+}
+.active{
+    font-weight: 700;
+    text-decoration: underline;
+
+}
+
     .noselect {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -840,7 +1034,7 @@
     
     ul {
         margin: 10px 0;
-        max-height: 200px;
+        max-height: 400px;
         overflow-y: auto;
         
         input[type="checkbox"] {

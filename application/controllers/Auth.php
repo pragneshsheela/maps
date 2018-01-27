@@ -1,4 +1,5 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
+date_default_timezone_set('Asia/Kolkata');
 
 class Auth extends CI_Controller {
 
@@ -17,41 +18,16 @@ class Auth extends CI_Controller {
 	// redirect if needed, otherwise display the user list
 	public function index()
 	{
-
-		if (!$this->ion_auth->logged_in())
-		{
-			// redirect them to the login page
-			redirect('auth/login', 'refresh');
-		}
-		elseif (!$this->ion_auth->is_admin()) // remove this elseif if you want to enable this for non-admins
-		{
-			// redirect them to the home page because they must be an administrator to view this
-			return show_error('You must be an administrator to view this page.');
-			redirect('home/index', 'refresh');
-		}
-		else
-		{
-			// set the flash data error message if there is one
-			$this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
-
-			//list the users
-			$this->data['users'] = $this->ion_auth->users()->result();
-			foreach ($this->data['users'] as $k => $user)
-			{
-				$this->data['users'][$k]->groups = $this->ion_auth->get_users_groups($user->id)->result();
-			}
-			
-			$username = $this->session->userdata('identity');
-        	$data['username'] = $username;
-
-			$this->_render_page('auth/index', $this->data);
-
-		}
+		redirect('auth/login', 'refresh');
+		
 	}
 
 	// log the user in
 	public function login()
 	{
+
+		
+		
 		$this->data['title'] = $this->lang->line('login_heading');
 
 		//validate form input
@@ -63,16 +39,40 @@ class Auth extends CI_Controller {
 			// check to see if the user is logging in
 			// check for "remember me"
 			$remember = (bool) $this->input->post('remember');
+				$identity = $this->input->post('identity');
+				$password = $this->input->post('password');
+				$url = "http://www.amulwd.com/sitemgr/ws/ws_imap.php";
+				$data = array(
+					'user'=>$identity,
+					'pwd'=>$password,
+				);			
+				
+				$data_string = json_encode($data);
+				$ch = curl_init($url);
+				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                     
+				$result = curl_exec($ch);
+				$parsed_json = json_decode($result);
 
-			if ($this->ion_auth->login($this->input->post('identity'), $this->input->post('password'), $remember))
+				$res = $parsed_json->result['0'];
+				
+
+			if ($res == 'authenticated')
 			{
 				//if the login is successful
 				//redirect them back to the home page
+				//$this->session->userdata['identity' = $this->input->post('identity');
+				$newdata = array( 
+					   'identity'  => $this->input->post('identity')					  
+					);
+				$this->session->set_userdata($newdata);
 				$this->session->set_flashdata('message', $this->ion_auth->messages());
-				redirect('/', 'refresh');
+				redirect('home/index', 'refresh');
 			}
 			else
 			{
+				
 				// if the login was un-successful
 				// redirect them back to the login page
 				$this->session->set_flashdata('message', $this->ion_auth->errors());

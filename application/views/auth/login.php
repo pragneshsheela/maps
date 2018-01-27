@@ -6,7 +6,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png" />
     <link rel="icon" type="image/png" href="assets/img/favicon.png" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <title>:: Role and Permission ::</title>
+    <title>:: Amul Tracks ::</title>
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
     <!-- Canonical SEO -->
@@ -32,19 +32,19 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../dashboard.html">Role and Permission</a>
+                <a class="navbar-brand" href="http://amultracks.com/portal/auth/login"> Amul Tracks </a>
             </div>
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
                     <li class=" active ">
-                        <a href="login.html">
+                        <a href="http://amultracks.com/portal/auth/login">
                             <i class="material-icons">fingerprint</i> Login
                         </a>
                     </li>
                     <li class="">
-                        <a href="<?php echo base_url(); ?>/auth/forgot_password">
+                       <!--  <a href="<?php echo base_url(); ?>/auth/forgot_password">
                             <i class="material-icons">lock_open</i> forgot password
-                        </a>
+                        </a> -->
                     </li>
                 </ul>
             </div>
@@ -61,7 +61,8 @@
                                     <div class="card-header text-center" data-background-color="rose">
                                         <h4 class="card-title">Login</h4>
                                         <div class="social-line">
-                                            <a href="#btn" class="btn btn-just-icon btn-simple">
+                                             <a href="assets/img/faces/avatar.jpg" class="image-link"><img style="height: 60px;width: 60px;" src="assets/img/faces/avatar.jpg" /></a>
+                                           <!--  <a href="#btn" class="btn btn-just-icon btn-simple">
                                                 <i class="fa fa-facebook-square"></i>
                                             </a>
                                             <a href="#pablo" class="btn btn-just-icon btn-simple">
@@ -69,20 +70,20 @@
                                             </a>
                                             <a href="#eugen" class="btn btn-just-icon btn-simple">
                                                 <i class="fa fa-google-plus"></i>
-                                            </a>
+                                            </a> -->
                                         </div>
                                     </div>
-                                    <p class="category text-center">
+                                  <!--   <p class="category text-center">
                                         Or Be Classical
-                                    </p>
+                                    </p> -->
                                     <div class="card-content">
                                         <div class="input-group">
                                             <span class="input-group-addon">
                                                 <i class="material-icons">email</i>
                                             </span>
                                             <div class="form-group label-floating">
-                                                <label class="control-label">Email address</label>
-                                                <input type="email" name="identity" id="identity" class="form-control">
+                                                <label class="control-label">Username</label>
+                                                <input type="text" name="identity" id="identity" class="form-control">
                                             </div>
                                         </div>
                                         <div class="input-group">
@@ -110,7 +111,7 @@
                 <div class="container">
                     <nav class="pull-left">
                         <ul>
-                            <li>
+                           <!--  <li>
                                 <a href="#">
                                     Home
                                 </a>
@@ -119,16 +120,16 @@
                                 <a href="#">
                                     Company
                                 </a>
-                            </li>
+                            </li> -->
                         </ul>
                     </nav>
-                    <p class="copyright pull-right">
+                   <!--  <p class="copyright pull-right">
                         &copy;
                         <script>
                             document.write(new Date().getFullYear())
                         </script>
                         <a href="#">Role And Permission Web Portal</a>, made with love for a better web
-                    </p>
+                    </p> -->
                 </div>
             </footer>
         </div>

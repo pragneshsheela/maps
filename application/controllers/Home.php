@@ -17,14 +17,22 @@ class Home extends CI_Controller {
 	}
 
 	public function index() {
+
 		
-		$data['cities'] = $this->mapshome_model->get_citylist();
-		$data['routes'] =  array();
-		//$data['routes'] = $this->mapshome_model->get_routes();
+		$session_user = $this->session->userdata('identity');
+		if($session_user){
+			$data['cities'] = $this->mapshome_model->get_citylist();
+			$data['routes'] =  array();		
 				
         $username = $this->session->userdata('identity');
         $data['username']=$username;
 		$this->template->load('admin','home/index',$data);
+		}else{
+			redirect('auth/login', 'refresh'); 
+
+		}
+		
+		
 	}
 
 	public function search() {
@@ -69,6 +77,7 @@ class Home extends CI_Controller {
 				$route[$route_id]['image'] = [];
 				$route[$route_id]['imagecaption'] = [];
 				$route[$route_id]['waypoints_latitude_longitude'] = [];
+				$route[$route_id]['route_name'] = $row['route_name'];
 			};
 
 			if($row['poi_latitude'] && $row['poi_longitude']) {
@@ -108,7 +117,7 @@ class Home extends CI_Controller {
 						$slider_image .= implode(",", $value['image']);
 						$slider_imagecaption .= implode(",", $value['imagecaption']);
 
-						$output .= "<li><div><input class='chkRoute' id="."way_".$key." name='waypoints[]' type='checkbox' ><span onclick='routeFun(".$key.");' class='cursor_pointer'>".$row['route_name']."</span><input type='hidden' class='rtId' value='".$key."'>
+						$output .="<li><div><input class='chkRoute' id="."way_".$key." name='waypoints[]' type='checkbox' ><span onclick='routeFun(".$key.");' class='cursor_pointer way_".$key."'>".$value['route_name']."</span><input type='hidden' class='rtId' value='".$key."'>
 		                <input type='hidden' class='rtOrig' value=''>
 		                <input type='hidden' class='rtDest' value=''>
 		                <input type='hidden' class='rtOlat' value='".$value['latitude']."'>
